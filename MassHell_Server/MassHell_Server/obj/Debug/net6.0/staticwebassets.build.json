@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "TRSTQ75d57/W64TdQLk5JUR4oS2+o5VDFQn4Y7h1lK4=",
+  "Source": "MassHell_Server",
+  "BasePath": "_content/MassHell_Server",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
