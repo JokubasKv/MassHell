@@ -7,7 +7,20 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Image HorizontalAlignment="Left" Height="40" Margin="205,209,0,0" VerticalAlignment="Top" Width="40"/>
-        <Rectangle HorizontalAlignment="Left" Height="50" Margin="95,259,0,0" Stroke="Black" VerticalAlignment="Top" Width="500" Cursor="AppStarting" Opacity="0.995" StrokeThickness="5" RadiusY="50" RadiusX="50"/>
+        <Rectangle x:Name="Cube1" HorizontalAlignment="Left" Height="57" Margin="80,217,0,0" Stroke="Black" VerticalAlignment="Top" Width="50"/>
+        <Rectangle x:Name="Cube2" HorizontalAlignment="Left" Height="59" Margin="187,256,0,0" Stroke="Black" VerticalAlignment="Top" Width="71" RenderTransformOrigin="1,0.5">
+            <Rectangle.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-89.095"/>
+                    <TranslateTransform X="-36" Y="-35.4956"/>
+                </TransformGroup>
+            </Rectangle.RenderTransform>
+        </Rectangle>
+        <Button x:Name="btn_Connect" Content="Connect" HorizontalAlignment="Left" Margin="520,344,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="btn_Text" Content="Send text" HorizontalAlignment="Left" Margin="580,344,0,0" VerticalAlignment="Top"/>
+
+
     </Grid>
 </Window>
