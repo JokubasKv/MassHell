@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using MassHell_MapLibrary;
+using MassHell_Library;
+
 namespace MassHell_Server
 {
     public class GameEngine : Hub
@@ -7,7 +8,14 @@ namespace MassHell_Server
         
         public async Task Message(string text)
         {
+            Console.WriteLine("Button pressed");
             await Clients.All.SendAsync("Receive", text);
+        }
+        public async Task UpdatePlayerPosition()
+        {
+            Console.WriteLine("Why no move");
+            await Clients.All.SendAsync("MovePlayer");
+
         }
     }
 }

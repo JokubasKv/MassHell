@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace MassHell_Library
 {
-    public class Map
+    public class Weapon : Item
     {
-        List<Tile> tiles { get; set; }
-
-
-        public Map()
+        public int Damage { get; set; }
+        public enum Rarity
         {
-            tiles = new List<Tile>();
+            Common,
+            Uncommon,
+            Rare,
+            Legendary
         }
-
     }
 }

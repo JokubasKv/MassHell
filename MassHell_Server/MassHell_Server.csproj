@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MassHell_MapLibrary\MassHell_MapLibrary.csproj" />
+    <ProjectReference Include="..\MassHell_Library\MassHell_Library.csproj" />
   </ItemGroup>
 
 </Project>

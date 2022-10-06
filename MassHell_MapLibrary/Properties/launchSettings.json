@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "MassHell_MapLibrary": {
+      "commandName": "Project"
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    }
+  }
+}

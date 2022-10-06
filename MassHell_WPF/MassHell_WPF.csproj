@@ -8,8 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\Varn_token.png" />
+    <None Remove="Varn_token.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.9" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MassHell_Library\MassHell_Library.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\Varn_token.png" />
+    <Resource Include="Varn_token.png" />
+  </ItemGroup>
+
 </Project>
-~

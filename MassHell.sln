@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MassHell_MapLibrary", "MassHell_MapLibrary\MassHell_MapLibrary.csproj", "{0C48431F-537B-4787-AC24-6FBEF071E0FF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MassHell_Server", "MassHell_Server\MassHell_Server.csproj", "{05D89957-AF82-46AA-81BC-ADCD011CC118}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassHell_WPF_Client", "MassHell_WPF_Client\MassHell_WPF_Client.csproj", "{D38AD8D1-1D7A-4A98-A899-525851C8436C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MassHell_WPF", "MassHell_WPF\MassHell_WPF.csproj", "{06D30C82-6CE3-4946-A5DF-C97B0D4B0EA8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassHell_Library", "MassHell_Library\MassHell_Library.csproj", "{59393B29-9046-4995-AF51-C91B6A2350D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,18 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0C48431F-537B-4787-AC24-6FBEF071E0FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0C48431F-537B-4787-AC24-6FBEF071E0FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0C48431F-537B-4787-AC24-6FBEF071E0FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0C48431F-537B-4787-AC24-6FBEF071E0FF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{05D89957-AF82-46AA-81BC-ADCD011CC118}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{05D89957-AF82-46AA-81BC-ADCD011CC118}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05D89957-AF82-46AA-81BC-ADCD011CC118}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05D89957-AF82-46AA-81BC-ADCD011CC118}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D38AD8D1-1D7A-4A98-A899-525851C8436C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D38AD8D1-1D7A-4A98-A899-525851C8436C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D38AD8D1-1D7A-4A98-A899-525851C8436C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D38AD8D1-1D7A-4A98-A899-525851C8436C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06D30C82-6CE3-4946-A5DF-C97B0D4B0EA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06D30C82-6CE3-4946-A5DF-C97B0D4B0EA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06D30C82-6CE3-4946-A5DF-C97B0D4B0EA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06D30C82-6CE3-4946-A5DF-C97B0D4B0EA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59393B29-9046-4995-AF51-C91B6A2350D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59393B29-9046-4995-AF51-C91B6A2350D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59393B29-9046-4995-AF51-C91B6A2350D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59393B29-9046-4995-AF51-C91B6A2350D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

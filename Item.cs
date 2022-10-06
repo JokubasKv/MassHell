@@ -6,15 +6,7 @@ using System.Threading.Tasks;
 
 namespace MassHell_Library
 {
-    public class Map
+    public class Item
     {
-        List<Tile> tiles { get; set; }
-
-
-        public Map()
-        {
-            tiles = new List<Tile>();
-        }
-
     }
 }
