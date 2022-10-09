@@ -15,10 +15,14 @@ using System.Windows.Shapes;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Text.Json;
+using System.Windows.Threading;
 using MassHell_Library;
 using System.Text.Unicode;
 using System.Windows.Xps.Serialization;
 using System.ComponentModel;
+using System.Threading;
+using Microsoft.Extensions.Logging.Console;
+using Microsoft.Extensions.Logging;
 
 namespace MassHell_WPF
 {
@@ -28,12 +32,23 @@ namespace MassHell_WPF
     public partial class MainWindow : Window
     {
         private HubConnection? connection;
+        bool goLeft,goRight, goUp, goDown;
+        int speed = 25;
+
+        PeriodicTimer gametimer = new PeriodicTimer(TimeSpan.FromMilliseconds(20));
 
         public MainWindow()
         {
             InitializeComponent();
             connection = new HubConnectionBuilder()
                 .WithUrl("https://localhost:7200/gameengine")
+                .ConfigureLogging(logging =>
+                {
+                    logging.AddConsole();
+
+                    logging.SetMinimumLevel(LogLevel.Debug);
+
+                })
                 .Build();
 
             //var user = new Image();
@@ -44,61 +59,167 @@ namespace MassHell_WPF
             //user.Source = new BitmapImage(resourceUri);
             //user.Margin = new Thickness(0, 0, 0, 0);
             //MapXML.Children.Add(user);
+
+            MainPanel.Focus();
+            StartConnection();
+            InitializeListeners();
+            GameTimerEvent();
+
+
         }
+
+        // Later will be changed to use Player class?
+        private async void GameTimerEvent()
+        {
+            while(await gametimer.WaitForNextTickAsync())
+            {
+                // With system.types it is not possible to serialize
+                // string player = JsonSerializer.Serialize(Player1);
+                double rotation = 0;
+                Tile tile = new Tile((Canvas.GetLeft(Player1)), (Canvas.GetTop(Player1)), rotation);
+
+                MovePlayer(tile);
+                //tile = new Tile((Canvas.GetLeft(Player1)), (Canvas.GetTop(Player1)), rotation);
+                await connection.InvokeAsync<Tile>("UpdatePlayerPosition", tile);
+            }
+        }
+
         public async void StartConnection()
         {
             await connection.StartAsync();
         }
-        public void Write()
-        {
-            string text = "Calling message";
-            connection.InvokeAsync<string>("Message", text);
-        }
         public async void InitializeListeners()
         {
-            connection.On<Player>("UpdatePlayerPosition", Player => MovePlayer());
+            // Later will be changed to use Player class?
+            
+            connection.On<Tile>("UpdatePlayerPosition",player => MoveOtherPlayer(player));
+
 
         }
-        //public void Print(string message)
-        //{
-        //    List<string> messages = new List<string>();
-        //    messages.Add(message);
-        //    TextList.ItemsSource = messages;
-        //}
-        private void MovePlayer()
+        // Changed to Player.cs later?
+        private void MovePlayer(Tile player)
         {
-            Down_Left.Content = "We not here";
-            Thickness current = Player.Margin;
-            Player.Margin =new Thickness(current.Left+5, current.Top-5, current.Right-5, current.Bottom+5);
-            //Player.UpdateLayout();
+            Canvas.SetLeft(Player1,player.XCoordinate);
+            Canvas.SetTop(Player1, player.YCoordinate);
+            double centerX = (Canvas.GetLeft(Player1) + Player1.Width / 2);
+            double centerY = (Canvas.GetTop(Player1) + Player1.Height / 2);
+            RotateTransform rotate = new RotateTransform(0, centerX, centerY);
+            if (goLeft && Canvas.GetLeft(Player1) > 3)
+            {
+                Canvas.SetLeft(Player1, Canvas.GetLeft(Player1) - speed);
+                rotate.Angle = 90;
+
+                Player1.LayoutTransform = rotate;
+
+            }
+            if (goRight && (Canvas.GetLeft(Player1) + Player1.Width + 3) < App.Current.MainWindow.ActualWidth)
+            {
+                Canvas.SetLeft(Player1, Canvas.GetLeft(Player1) + speed);
+                rotate.Angle = -90;
+
+                Player1.LayoutTransform = rotate;
+            }
+            if (goUp && Canvas.GetTop(Player1) > 15)
+            {
+                Canvas.SetTop(Player1, Canvas.GetTop(Player1) - speed);
+                rotate.Angle = 180;
+
+                Player1.LayoutTransform = rotate;
+            }
+            if (goDown && (Canvas.GetTop(Player1) + Player1.Width + 15) < App.Current.MainWindow.ActualHeight)
+            {
+                Canvas.SetTop(Player1, Canvas.GetTop(Player1) + speed);
+                rotate.Angle = 0;
+
+                Player1.LayoutTransform = rotate;
+            }
+            Player1.UpdateLayout();
         }
-        private void Connect_Click_1(object sender, RoutedEventArgs e)
+        private void MoveOtherPlayer(Tile player)
         {
-            StartConnection();
-            InitializeListeners();
-            Connect.Visibility = Visibility.Collapsed;
-            //connection.InvokeAsync<Player>("MovePlayer");
-            //MovePlayer();
+            Canvas.SetLeft(Player11, player.XCoordinate);
+            Canvas.SetTop(Player11, player.YCoordinate);
+            double centerX = (Canvas.GetLeft(Player11) + Player11.Width / 2);
+            double centerY = (Canvas.GetTop(Player11) + Player11.Height / 2);
+            RotateTransform rotate = new RotateTransform(0, centerX, centerY);
+            if (goLeft && Canvas.GetLeft(Player11) > 3)
+            {
+                Canvas.SetLeft(Player11, Canvas.GetLeft(Player11) - speed);
+                rotate.Angle = 90;
+
+                Player11.LayoutTransform = rotate;
+
+            }
+            if (goRight && (Canvas.GetLeft(Player11) + Player11.Width + 3) < App.Current.MainWindow.ActualWidth)
+            {
+                Canvas.SetLeft(Player11, Canvas.GetLeft(Player11) + speed);
+                rotate.Angle = -90;
+
+                Player11.LayoutTransform = rotate;
+            }
+            if (goUp && Canvas.GetTop(Player11) > 15)
+            {
+                Canvas.SetTop(Player11, Canvas.GetTop(Player11) - speed);
+                rotate.Angle = 180;
+
+                Player11.LayoutTransform = rotate;
+            }
+            if (goDown && (Canvas.GetTop(Player11) + Player11.Width + 15) < App.Current.MainWindow.ActualHeight)
+            {
+                Canvas.SetTop(Player11, Canvas.GetTop(Player11) + speed);
+                rotate.Angle = 0;
+
+                Player11.LayoutTransform = rotate;
+            }
+            Player11.UpdateLayout();
         }
-
-        private void MapXML_KeyDown(object sender, KeyEventArgs e)
+        /// <summary>
+        /// Button control pressed down
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainPanel_KeyDown(object sender, KeyEventArgs e)
         {
-            // Won't work
-            //if(e.Key == Key.Up)
-            //{
-
-
-            //}
-            //else
-            //{
-            //    StartConnection();
-            //}
+            if(e.Key == Key.A)
+            {
+                goLeft = true;
+            }
+            if (e.Key == Key.D)
+            {
+                goRight = true;
+            }
+            if (e.Key == Key.W)
+            {
+                goUp = true;
+            }
+            if (e.Key == Key.S)
+            {
+                goDown = true;
+            }
         }
-
-        private void Down_Left_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Button control when lifted up
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainPanel_KeyUp(object sender, KeyEventArgs e)
         {
-            //MovePlayer();
-            connection.InvokeAsync<Player>("UpdatePlayerPosition",Player);
+            if (e.Key == Key.A)
+            {
+                goLeft = false;
+            }
+            if (e.Key == Key.D)
+            {
+                goRight = false;
+            }
+            if (e.Key == Key.W)
+            {
+                goUp = false;
+            }
+            if (e.Key == Key.S)
+            {
+                goDown = false;
+            }
         }
     }
 }

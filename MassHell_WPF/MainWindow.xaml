@@ -5,23 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MassHell_WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="660" Width="1845">
-    <Grid x:Name="MapXML" Keyboard.KeyDown="MapXML_KeyDown" Background="AliceBlue">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <Button x:Name="Connect" Grid.Column="1" Content="Button" HorizontalAlignment="Left" Margin="0,389,0,0" VerticalAlignment="Top" Click="Connect_Click_1"/>
-        <Image x:Name="Player" Source="Images/Varn_token.png" Margin="533,79,76,343" >
+        Title="MainWindow" Height="720" Width="1280">
+    <Canvas x:Name="MainPanel" Keyboard.KeyDown="MainPanel_KeyDown" Keyboard.KeyUp="MainPanel_KeyUp" Background="LightBlue"
+            Focusable="True">
+        <Rectangle x:Name="Player11" Height="100" Width="100" Canvas.Left="625" Canvas.Top="44" Fill="Chocolate"></Rectangle>
+        <Image x:Name="Player1" Source="Images/Varn_token.png" Height='100' Width="100" Canvas.Left="625" Canvas.Top="44" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
             <Image.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
                     <SkewTransform/>
-                    <RotateTransform/>
-                    <TranslateTransform X="0" Y="{Binding newY}"/>
+                    <RotateTransform Angle="0"/>
+                    <TranslateTransform/>
                 </TransformGroup>
             </Image.RenderTransform>
         </Image>
-        <Button x:Name="Down_Left" Content="Button" HorizontalAlignment="Left" Margin="340,494,0,0" VerticalAlignment="Top" Click="Down_Left_Click"/>
-    </Grid>
+    </Canvas>
 </Window>

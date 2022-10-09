@@ -8,15 +8,17 @@ namespace MassHell_Library
 {
     public class Tile
     {
-        public int XCoordinate { get; set; }
-        public int YCoordinate { get; set; }
+        public double XCoordinate { get; set; }
+        public double YCoordinate { get; set; }
+        public double Rotation { get; set; }
         public Tile()
         {
         }
-        public Tile(int xCoordinate, int yCoordinate)
+        public Tile(double xCoordinate, double yCoordinate, double rotation)
         {
             XCoordinate = xCoordinate;
             YCoordinate = yCoordinate;
+            Rotation = rotation;
         }
     }
 
