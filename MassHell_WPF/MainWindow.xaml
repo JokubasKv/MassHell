@@ -8,8 +8,9 @@
         Title="MainWindow" Height="720" Width="1280">
     <Canvas x:Name="MainPanel" Keyboard.KeyDown="MainPanel_KeyDown" Keyboard.KeyUp="MainPanel_KeyUp" Background="LightBlue"
             Focusable="True">
-        <Rectangle x:Name="Player11" Height="100" Width="100" Canvas.Left="625" Canvas.Top="44" Fill="Chocolate"></Rectangle>
-        <Image x:Name="Player1" Source="Images/Varn_token.png" Height='100' Width="100" Canvas.Left="625" Canvas.Top="44" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+        <TextBox x:Name="Text" Height='100' Width="100" Canvas.Left="425" Canvas.Top="44"></TextBox>
+        <Rectangle x:Name="Player1" Height="100" Width="100" Canvas.Left="625" Canvas.Top="44" Fill="Chocolate"></Rectangle>
+        <Image x:Name="Player11" Source="Images/Varn_token.png" Height='100' Width="100" Canvas.Left="625" Canvas.Top="44" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
             <Image.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>

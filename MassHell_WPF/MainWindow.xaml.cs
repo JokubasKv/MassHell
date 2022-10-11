@@ -1,28 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Client;
-using System.Text.Json;
-using System.Windows.Threading;
 using MassHell_Library;
-using System.Text.Unicode;
-using System.Windows.Xps.Serialization;
-using System.ComponentModel;
 using System.Threading;
-using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace MassHell_WPF
 {
@@ -35,20 +20,14 @@ namespace MassHell_WPF
         bool goLeft,goRight, goUp, goDown;
         int speed = 25;
 
-        PeriodicTimer gametimer = new PeriodicTimer(TimeSpan.FromMilliseconds(20));
+        PeriodicTimer gametimer = new PeriodicTimer(TimeSpan.FromMilliseconds(100));
 
         public MainWindow()
         {
             InitializeComponent();
             connection = new HubConnectionBuilder()
                 .WithUrl("https://localhost:7200/gameengine")
-                .ConfigureLogging(logging =>
-                {
-                    logging.AddConsole();
-
-                    logging.SetMinimumLevel(LogLevel.Debug);
-
-                })
+                .WithAutomaticReconnect()
                 .Build();
 
             //var user = new Image();
@@ -77,10 +56,11 @@ namespace MassHell_WPF
                 // string player = JsonSerializer.Serialize(Player1);
                 double rotation = 0;
                 Tile tile = new Tile((Canvas.GetLeft(Player1)), (Canvas.GetTop(Player1)), rotation);
+                await connection.InvokeAsync("UpdatePlayerPosition", tile);
 
-                MovePlayer(tile);
-                //tile = new Tile((Canvas.GetLeft(Player1)), (Canvas.GetTop(Player1)), rotation);
-                await connection.InvokeAsync<Tile>("UpdatePlayerPosition", tile);
+                if(goLeft|goRight|goUp|goDown)
+                    MovePlayer(tile);
+                tile = new Tile((Canvas.GetLeft(Player1)), (Canvas.GetTop(Player1)), rotation);
             }
         }
 
@@ -88,11 +68,19 @@ namespace MassHell_WPF
         {
             await connection.StartAsync();
         }
-        public async void InitializeListeners()
+        public void InitializeListeners()
         {
             // Later will be changed to use Player class?
-            
-            connection.On<Tile>("UpdatePlayerPosition",player => MoveOtherPlayer(player));
+
+            //connection.On<Tile>("UpdatePlayerPosition",player => MoveOtherPlayer(player));
+            connection.On<Tile>("MoveOtherPlayer", (player) =>
+            {
+                Text.Text = "I moved through server";
+
+                Canvas.SetLeft(Player11, player.XCoordinate);
+                Canvas.SetTop(Player11, player.YCoordinate);
+                Player11.UpdateLayout();
+            });
 
 
         }
@@ -137,40 +125,42 @@ namespace MassHell_WPF
         }
         private void MoveOtherPlayer(Tile player)
         {
+            Debug.WriteLine(player.XCoordinate);
+            Text.Text = "I moved through server";
             Canvas.SetLeft(Player11, player.XCoordinate);
             Canvas.SetTop(Player11, player.YCoordinate);
-            double centerX = (Canvas.GetLeft(Player11) + Player11.Width / 2);
-            double centerY = (Canvas.GetTop(Player11) + Player11.Height / 2);
-            RotateTransform rotate = new RotateTransform(0, centerX, centerY);
-            if (goLeft && Canvas.GetLeft(Player11) > 3)
-            {
-                Canvas.SetLeft(Player11, Canvas.GetLeft(Player11) - speed);
-                rotate.Angle = 90;
+            //double centerX = (Canvas.GetLeft(Player11) + Player11.Width / 2);
+            //double centerY = (Canvas.GetTop(Player11) + Player11.Height / 2);
+            //RotateTransform rotate = new RotateTransform(0, centerX, centerY);
+            //if (goLeft && Canvas.GetLeft(Player11) > 3)
+            //{
+            //    Canvas.SetLeft(Player11, Canvas.GetLeft(Player11) - speed);
+            //    rotate.Angle = 90;
 
-                Player11.LayoutTransform = rotate;
+            //    Player11.LayoutTransform = rotate;
 
-            }
-            if (goRight && (Canvas.GetLeft(Player11) + Player11.Width + 3) < App.Current.MainWindow.ActualWidth)
-            {
-                Canvas.SetLeft(Player11, Canvas.GetLeft(Player11) + speed);
-                rotate.Angle = -90;
+            //}
+            //if (goRight && (Canvas.GetLeft(Player11) + Player11.Width + 3) < App.Current.MainWindow.ActualWidth)
+            //{
+            //    Canvas.SetLeft(Player11, Canvas.GetLeft(Player11) + speed);
+            //    rotate.Angle = -90;
 
-                Player11.LayoutTransform = rotate;
-            }
-            if (goUp && Canvas.GetTop(Player11) > 15)
-            {
-                Canvas.SetTop(Player11, Canvas.GetTop(Player11) - speed);
-                rotate.Angle = 180;
+            //    Player11.LayoutTransform = rotate;
+            //}
+            //if (goUp && Canvas.GetTop(Player11) > 15)
+            //{
+            //    Canvas.SetTop(Player11, Canvas.GetTop(Player11) - speed);
+            //    rotate.Angle = 180;
 
-                Player11.LayoutTransform = rotate;
-            }
-            if (goDown && (Canvas.GetTop(Player11) + Player11.Width + 15) < App.Current.MainWindow.ActualHeight)
-            {
-                Canvas.SetTop(Player11, Canvas.GetTop(Player11) + speed);
-                rotate.Angle = 0;
+            //    Player11.LayoutTransform = rotate;
+            //}
+            //if (goDown && (Canvas.GetTop(Player11) + Player11.Width + 15) < App.Current.MainWindow.ActualHeight)
+            //{
+            //    Canvas.SetTop(Player11, Canvas.GetTop(Player11) + speed);
+            //    rotate.Angle = 0;
 
-                Player11.LayoutTransform = rotate;
-            }
+            //    Player11.LayoutTransform = rotate;
+            //}
             Player11.UpdateLayout();
         }
         /// <summary>

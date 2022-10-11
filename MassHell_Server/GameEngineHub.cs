@@ -3,11 +3,11 @@ using MassHell_Library;
 
 namespace MassHell_Server
 {
-    public class GameEngine : Hub
+    public class GameEngineHub : Hub
     {
         public async Task UpdatePlayerPosition(Tile player)
         {
-            Console.WriteLine("Why  move");
+            Console.WriteLine(Context.UserIdentifier);
             await Clients.Others.SendAsync("MoveOtherPlayer",player);
 
         }

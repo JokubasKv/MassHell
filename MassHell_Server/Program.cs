@@ -19,7 +19,7 @@ internal class Program
             app.UseHsts();
         }
 
-        //app.UseHttpsRedirection();
+        app.UseHttpsRedirection();
         //app.UseStaticFiles();
 
         app.UseRouting();
@@ -29,8 +29,9 @@ internal class Program
         //app.MapRazorPages();
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapHub<GameEngine>("/gameengine");
+            endpoints.MapHub<GameEngineHub>("/gameengine");
         });
+        //app.MapHub<GameEngineHub>("/gameengine");
 
         app.Run();
     }
