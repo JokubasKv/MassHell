@@ -29,9 +29,8 @@ internal class Program
         //app.MapRazorPages();
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapHub<GameEngineHub>("/gameengine");
+            endpoints.MapHub<GameEngine>("/gameengine");
         });
-        //app.MapHub<GameEngineHub>("/gameengine");
 
         app.Run();
     }
