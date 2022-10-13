@@ -9,12 +9,14 @@ namespace MassHell_Library
     public class SpeedPowerUp : PowerUp
     {
         public float SpeedBoost{ get; set; }
-        public SpeedPowerUp()
+        public SpeedPowerUp() 
         {
 
         }
-        public SpeedPowerUp(float speedBoost)
+        public SpeedPowerUp(float speedBoost,string name, int effectTime) : base(name, effectTime)
         {
+            EffectTime = effectTime;
+            Name = name;
             SpeedBoost = speedBoost;
         }
     }

@@ -8,5 +8,6 @@ namespace MassHell_Library
 {
     public class Item
     {
+        public string Name { get; set; }
     }
 }

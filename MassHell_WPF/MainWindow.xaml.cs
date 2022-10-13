@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using System.Xml.Linq;
+using System.Numerics;
 
 namespace MassHell_WPF
 {
@@ -19,10 +21,10 @@ namespace MassHell_WPF
     public partial class MainWindow : Window
     {
         private HubConnection? connection;
-        bool goLeft,goRight, goUp, goDown;
+        bool goLeft,goRight, goUp, goDown,invOpen = true;
         int speed = 25;
 
-        PeriodicTimer gametimer = new PeriodicTimer(TimeSpan.FromMilliseconds(100));
+        PeriodicTimer gametimer = new PeriodicTimer(TimeSpan.FromMilliseconds(25));
 
         public MainWindow()
         {
@@ -83,10 +85,12 @@ namespace MassHell_WPF
 
             connection.On<Tile,string>("PlayerConnected",(position,name) =>
             {
-                connection.InvokeAsync("CreatePlayer", position, name);
+                //connection.InvokeAsync("CreatePlayer", position, name);
+                CreatePlayer(position, name);
             });
-            connection.On<Tile,string>("CreatePlayer", (position,name) => CreatePlayer(position,name));
+            // connection.On<Tile,string>("CreatePlayer", (position,name) => CreatePlayer(position,name));
             connection.On<Tile,string>("MoveOtherPlayer", (player,name) => MoveOtherPlayer(player,name));
+            connection.On<Tile, Item>("DrawItem", (position, item) => DrawItem(position, item));
         }
 
         private void CreatePlayer(Tile position,string name)
@@ -101,8 +105,8 @@ namespace MassHell_WPF
             user.Width = 100;
             Uri resourceUri = new Uri("Images/Varn_token.png", UriKind.Relative);
             user.Source = new BitmapImage(resourceUri);
-            Canvas.SetTop(user, position.XCoordinate+100);
-            Canvas.SetLeft(user, position.YCoordinate +100);
+            Canvas.SetTop(user, position.XCoordinate);
+            Canvas.SetLeft(user, position.YCoordinate);
             user.LayoutTransform = new RotateTransform(position.Rotation);  
             MainPanel.Children.Add(user);
         }
@@ -151,6 +155,27 @@ namespace MassHell_WPF
             return player;
         }
 
+        public void DrawItem(Tile pos,Item item)
+        {
+            var user = new Image();
+            user.Name = item.Name;
+            user.Height = 100;
+            user.Width = 100;
+            Uri resourceUri;
+            if (item.GetType() == typeof(Weapon))
+            {
+                resourceUri = new Uri("Images/sword.png", UriKind.Relative);
+            }
+            else
+            {
+                resourceUri = new Uri("Images/potion.png", UriKind.Relative);
+            }
+            user.Source = new BitmapImage(resourceUri);
+            Canvas.SetTop(user, pos.XCoordinate + 50);
+            Canvas.SetLeft(user, pos.YCoordinate + 50);
+            user.LayoutTransform = new RotateTransform(pos.Rotation);
+            MainPanel.Children.Add(user);
+        }
         private void RegisterUser_Click(object sender, RoutedEventArgs e)
         {
             Tile tile = new Tile(0, 0, 0);
@@ -203,6 +228,26 @@ namespace MassHell_WPF
             {
                 goDown = true;
             }
+            //Images for some reason dont load
+            if(e.Key == Key.P)
+            {
+                connection.InvokeAsync("SpawnItem");
+            }
+            if(e.Key == Key.I)
+            {
+                OpenInventory(invOpen);
+                invOpen = !invOpen;
+            }
+        }
+        public void OpenInventory(bool open)
+        {
+            if(open)
+            {
+                Inventory.Visibility = Visibility.Visible;
+                Inventory.Focus();
+                return;
+            }
+            Inventory.Visibility = Visibility.Collapsed;
         }
         /// <summary>
         /// Button control when lifted up

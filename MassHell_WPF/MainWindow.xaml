@@ -7,16 +7,40 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="720" Width="1280">
     <Canvas>
+        <Grid x:Name="Inventory" Opacity="0.5"  HorizontalAlignment="Left" VerticalAlignment="Top" Background="DimGray" Width="500" Height="166
+              " Canvas.Left="390" Canvas.Top="252" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Name="row0"  Height="*"/>
+                <RowDefinition  Name ="row1" Height="*"/>
+                <RowDefinition x:Name="row2" Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Name="column0" Width="*"/>
+                <ColumnDefinition Name="column1"  Width="*"/>
+                <ColumnDefinition Name="column2"  Width="*"/>
+                <ColumnDefinition Name="column3" Width="*"/>
+                <ColumnDefinition Name="column4" Width="*"/>
+                <ColumnDefinition Name="column5" Width="*"/>
+                <ColumnDefinition Name="column6" Width="*"/>
+                <ColumnDefinition Name="column7" Width="*"/>
+                <ColumnDefinition Name="column8" Width="*"/>
+                <ColumnDefinition Name="column9" Width="*"/>
+            </Grid.ColumnDefinitions>
+
+
+        </Grid>
         <Canvas Name="MainPanel" Keyboard.KeyDown="MainPanel_KeyDown" Keyboard.KeyUp="MainPanel_KeyUp" Background="LightBlue"
             Focusable="True" Visibility="Collapsed">
         </Canvas>
         <Canvas x:Name="MainMenu">
-            <Label Content="Enter your username :" Height='20' Width="250" Canvas.Left="550" Canvas.Top="214"></Label>
+            <Label Content="Enter your username :" Height='30' Width="250" Canvas.Left="550" Canvas.Top="214"></Label>
             <TextBox Name="UsernameBox" Height='20
                      ' Width="250" Canvas.Left="550" Canvas.Top="289" BorderThickness="2"></TextBox>
             <Button Content="Connect" Name="RegisterUser" Height='20
                     ' Width="100" Canvas.Left="625" Canvas.Top="339" HorizontalAlignment="Center" VerticalAlignment="Top" Click="RegisterUser_Click"></Button>
         </Canvas>
+
     </Canvas>
+
 
 </Window>
