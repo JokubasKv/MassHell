@@ -1,3 +1,4 @@
+using MassHell_Library;
 using MassHell_Server;
 
 internal class Program
@@ -9,6 +10,7 @@ internal class Program
         // Add services to the container.
         //builder.Services.AddRazorPages();
         builder.Services.AddSignalR();
+        builder.Services.AddSingleton<Map>();
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
