@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MassHell_Library
 {
-    public class SpeedPowerUp : PowerUp
+    public class SpeedPowerUp :PowerUp, IPowerUp
     {
         public float SpeedBoost{ get; set; }
         public SpeedPowerUp() 
@@ -18,6 +18,11 @@ namespace MassHell_Library
             EffectTime = effectTime;
             Name = name;
             SpeedBoost = speedBoost;
+        }
+
+        public int PowerupValue()
+        {
+            return (int)SpeedBoost;
         }
     }
 }

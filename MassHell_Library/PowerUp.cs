@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MassHell_Library
 {
-    public class PowerUp : Item
+    public abstract class PowerUp : Item
     {
         public int EffectTime { get; set; }
         public PowerUp(string name,int effectTime)

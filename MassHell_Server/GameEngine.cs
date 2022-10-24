@@ -42,7 +42,8 @@ namespace MassHell_Server
             }
             else
             {
-                returningItem = new SpeedPowerUp(1.5f,"SPEED",20);
+                returningItem = (Item)PowerUpFactory.getPowerUp("speedpowerup");
+                //returningItem = new SpeedPowerUp(1.5f,"SPEED",20);
                 Console.WriteLine("PowerUp Created");
 
             }

@@ -6,7 +6,17 @@ using System.Threading.Tasks;
 
 namespace MassHell_Library
 {
-    public class WaterWalk : PowerUp
+    public class WaterWalk :PowerUp, IPowerUp
     {
+        public int Duration { get; set; }
+        public WaterWalk()
+        {
+            this.Duration = 30;
+        }
+
+        public int PowerupValue()
+        {
+            return Duration;
+        }
     }
 }
