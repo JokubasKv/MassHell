@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using MassHell_Library;
+using MassHell_Library.Interfaces;
 using System;
 
 namespace MassHell_Server
@@ -62,6 +63,37 @@ namespace MassHell_Server
             }
             return map;
 
+        }
+
+        // Factory that creates enemys
+        IEnemyFactory factory = null;
+        public async Task SpawnEnemy()
+        {
+            int heightRandom = pos.Next(1, 720);
+            int widthRandom = pos.Next(1, 1280);
+            Tile position = new Tile(widthRandom, heightRandom, 0);
+            float chance = pos.NextSingle();
+            Item returningItem;
+
+            if (chance > 0.5)
+            {
+                factory = new Warrior(5, 100, 1.5f);
+                Console.WriteLine("New Warior equipment:");
+                Console.WriteLine(factory.GetWeapon().Item());
+                Console.WriteLine(factory.GetArmor().Item());
+                Console.WriteLine("-----------------------");
+                returningItem = factory as Item;
+            }
+            else
+            {
+                factory = new Mage(10, 150, 2.5f);
+                Console.WriteLine("New Mage equipment: ");
+                Console.WriteLine(factory.GetWeapon().Item());
+                Console.WriteLine(factory.GetArmor().Item());
+                Console.WriteLine("-----------------------");
+                returningItem = factory as Item;
+            }
+            await Clients.All.SendAsync("DrawItem", position, returningItem);
         }
     }
 }

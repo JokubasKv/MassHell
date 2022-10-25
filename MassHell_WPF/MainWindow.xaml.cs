@@ -238,6 +238,10 @@ namespace MassHell_WPF
                 OpenInventory(invOpen);
                 invOpen = !invOpen;
             }
+            if (e.Key == Key.H)
+            {
+                connection.InvokeAsync("SpawnEnemy");
+            }
         }
         public void OpenInventory(bool open)
         {
