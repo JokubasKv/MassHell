@@ -3,12 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MassHell_Library.Interfaces;
 
 namespace MassHell_Library
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class PowerUpFactory
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static IPowerUp getPowerUp(string type)
         {
             IPowerUp objType = null;

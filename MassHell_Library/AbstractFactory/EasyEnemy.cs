@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MassHell_Library.Interfaces
+namespace MassHell_Library.AbstractFactory
 {
-    public interface IWeapon
+    public abstract class EasyEnemy : Item
     {
-        string Item();
     }
 }

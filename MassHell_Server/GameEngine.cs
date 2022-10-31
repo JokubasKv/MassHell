@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using MassHell_Library;
-using MassHell_Library.Interfaces;
 using System;
+using MassHell_Library.AbstractFactory;
 
 namespace MassHell_Server
 {
@@ -51,6 +51,88 @@ namespace MassHell_Server
             await Clients.All.SendAsync("DrawItem", position, returningItem);
 
         }
+
+        /// <summary>
+        /// Spawning enemies based on chance
+        /// </summary>
+        /// <returns>Enenmy that needs to spawn</returns>
+        public async Task SpawnEnemy()
+        {
+            int heightRandom = pos.Next(1, 720);
+            int widthRandom = pos.Next(1, 1280);
+            Tile position = new Tile(widthRandom, heightRandom, 0);
+
+            Random random = new Random();
+            int chance = random.Next(0, 300);
+            Item returningItem;
+
+            if (chance >= 100 && chance <= 200)
+            {
+                // Creating mages
+                Random random2 = new Random();
+                int chance2 = random.Next(0, 300);
+                if (chance2 >= 100 && chance2 <= 200)
+                {
+                    EnemyFacotry factory = new MageFactory();
+                    returningItem = factory.CreateEasy();
+                }
+                else if(chance2 > 200)
+                {
+                    EnemyFacotry factory = new MageFactory();
+                    returningItem = factory.CreateMedium();
+                }
+                else
+                {
+                    EnemyFacotry factory = new MageFactory();
+                    returningItem = factory.CreateHard();
+                }
+
+            }
+            else if(chance > 200)
+            {
+                // Creating warriors
+                Random random2 = new Random();
+                int chance2 = random2.Next(0, 300);
+                if (chance2 >= 100 && chance2 <= 200)
+                {
+                    EnemyFacotry factory = new WarriorFactory();
+                    returningItem = factory.CreateEasy();
+                }
+                else if (chance2 > 200)
+                {
+                    EnemyFacotry factory = new WarriorFactory();
+                    returningItem = factory.CreateMedium();
+                }
+                else
+                {
+                    EnemyFacotry factory = new WarriorFactory();
+                    returningItem = factory.CreateHard();
+                }
+            }
+            else
+            {
+                // Creating ninjas
+                Random random2 = new Random();
+                int chance2 = random2.Next(0, 300);
+                if (chance2 >= 100 && chance2 <= 200)
+                {
+                    EnemyFacotry factory = new NinjaFactory();
+                    returningItem = factory.CreateEasy();
+                }
+                else if (chance2 > 200)
+                {
+                    EnemyFacotry factory = new NinjaFactory();
+                    returningItem = factory.CreateMedium();
+                }
+                else
+                {
+                    EnemyFacotry factory = new NinjaFactory();
+                    returningItem = factory.CreateHard();
+                }
+            }
+            await Clients.All.SendAsync("DrawItem", position, returningItem);
+        }
+
         public Map CreateMap()
         {
             // Add logic to add rows of tiles with correct coords
@@ -63,37 +145,6 @@ namespace MassHell_Server
             }
             return map;
 
-        }
-
-        // Factory that creates enemys
-        IEnemyFactory factory = null;
-        public async Task SpawnEnemy()
-        {
-            int heightRandom = pos.Next(1, 720);
-            int widthRandom = pos.Next(1, 1280);
-            Tile position = new Tile(widthRandom, heightRandom, 0);
-            float chance = pos.NextSingle();
-            Item returningItem;
-
-            if (chance > 0.5)
-            {
-                factory = new Warrior(5, 100, 1.5f);
-                Console.WriteLine("New Warior equipment:");
-                Console.WriteLine(factory.GetWeapon().Item());
-                Console.WriteLine(factory.GetArmor().Item());
-                Console.WriteLine("-----------------------");
-                returningItem = factory as Item;
-            }
-            else
-            {
-                factory = new Mage(10, 150, 2.5f);
-                Console.WriteLine("New Mage equipment: ");
-                Console.WriteLine(factory.GetWeapon().Item());
-                Console.WriteLine(factory.GetArmor().Item());
-                Console.WriteLine("-----------------------");
-                returningItem = factory as Item;
-            }
-            await Clients.All.SendAsync("DrawItem", position, returningItem);
         }
     }
 }
