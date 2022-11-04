@@ -8,8 +8,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\potion.png" />
+    <None Remove="Images\sword.png" />
     <None Remove="Images\Varn_token.png" />
     <None Remove="Varn_token.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Images\potion.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\sword.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

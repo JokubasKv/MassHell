@@ -18,6 +18,7 @@ namespace MassHell_Server
             if (connectedPlayers.Count > 0) {
                 Console.WriteLine("Telling "+ p.Name + " to draw others");
                 await Clients.Caller.SendAsync("DrawOtherPlayers", connectedPlayers);
+                InnerHolderSingleton.getInstance();
             }
             //Add player to connected players
             connectedPlayers.Add(p);
@@ -34,14 +35,6 @@ namespace MassHell_Server
         }*/
         public async Task UpdatePlayerPosition(Player p)
         {
-            //Update the server with current player positions. (Could be used for something)
-            foreach (var item in connectedPlayers)
-            {
-                if(item.Name == p.Name)
-                {
-                    connectedPlayers[connectedPlayers.IndexOf(item)] = p;
-                }
-            }
             //Send every other client updated movement
             await Clients.Others.SendAsync("MoveOtherPlayer",p);
 
@@ -64,7 +57,6 @@ namespace MassHell_Server
             {
                 returningItem = (Item)PowerUpFactory.getPowerUp("speedpowerup");
                 //returningItem = new SpeedPowerUp(1.5f,"SPEED",20);
-                Console.WriteLine("PowerUp Created");
 
             }
             await Clients.All.SendAsync("DrawItem", position, returningItem);
@@ -149,6 +141,7 @@ namespace MassHell_Server
                     returningItem = factory.CreateHard();
                 }
             }
+            returningItem.Name = "Enemy";
             await Clients.All.SendAsync("DrawItem", position, returningItem);
         }
 

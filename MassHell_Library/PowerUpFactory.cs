@@ -40,6 +40,7 @@ namespace MassHell_Library
             {
                 throw new ArgumentNullException($"Incorrect power up type {type}");
             }
+            Console.WriteLine(objType.GetType().Name + " power up created");
             return objType;
         }
     }

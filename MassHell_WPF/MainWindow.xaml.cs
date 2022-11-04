@@ -175,9 +175,14 @@ namespace MassHell_WPF
             user.Height = 100;
             user.Width = 100;
             Uri resourceUri;
-            if (item.GetType() == typeof(Weapon))
+            Console.WriteLine(item.GetType());
+            if (item.Name == "InterestingName")
             {
                 resourceUri = new Uri("Images/sword.png", UriKind.Relative);
+            }
+            else if (item.Name == "Enemy")
+            {
+                resourceUri = new Uri("Images/Varn_token.png", UriKind.Relative);
             }
             else
             {
