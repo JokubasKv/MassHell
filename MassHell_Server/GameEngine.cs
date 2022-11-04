@@ -9,22 +9,41 @@ namespace MassHell_Server
     {
         Random pos = new Random();
 
+        static List<Player> connectedPlayers=new List<Player>();
 
-        public async Task PlayerConnected(Tile position,string name)
+
+        public async Task PlayerConnected(Player p)
         {
-            Console.WriteLine("New connected");
-            await Clients.Others.SendAsync("PlayerConnected", position,name);
+            //If the playeris not the first, draw every other connected player, so if somebody is late they can still see others.
+            if (connectedPlayers.Count > 0) {
+                Console.WriteLine("Telling "+ p.Name + " to draw others");
+                await Clients.Caller.SendAsync("DrawOtherPlayers", connectedPlayers);
+            }
+            //Add player to connected players
+            connectedPlayers.Add(p);
+            Console.WriteLine("New connected " + p.Name + " | " + connectedPlayers.Count);
+
+            //Tell all other players about new player
+            await Clients.Others.SendAsync("PlayerConnected", p);
         }
-        public async Task CreatePlayer(Tile pos, string name)
+       /* public async Task CreatePlayer(Player p)
         {
             Console.WriteLine("Player created");
-            Console.WriteLine("Player Name : {0}",name);
-            await Clients.Others.SendAsync("CreatePlayer", pos,name);
-        }
-        public async Task UpdatePlayerPosition(Tile player,string name)
+            Console.WriteLine("Player Name : {0}", p.Name);
+            await Clients.Others.SendAsync("CreatePlayer", p);
+        }*/
+        public async Task UpdatePlayerPosition(Player p)
         {
-            
-            await Clients.Others.SendAsync("MoveOtherPlayer",player,name);
+            //Update the server with current player positions. (Could be used for something)
+            foreach (var item in connectedPlayers)
+            {
+                if(item.Name == p.Name)
+                {
+                    connectedPlayers[connectedPlayers.IndexOf(item)] = p;
+                }
+            }
+            //Send every other client updated movement
+            await Clients.Others.SendAsync("MoveOtherPlayer",p);
 
         }
         public async Task SpawnItem()

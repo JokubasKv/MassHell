@@ -29,11 +29,13 @@ namespace MassHell_Library
 
         Movement movement = new Movement();
 
+
+
         public Player()
         {
             Inventory = new Item[0];
         }
-        public Player(int id, string name, double positionX, double positionY, int speed, int damage, int health, byte lives, int mana = 0, bool canWalkOnWater = false)
+        public Player(int id, string name, double positionX, double positionY,double rotation, int speed, int damage, int health, byte lives, int mana = 0, bool canWalkOnWater = false)
         {
             Id = id;
             Name = name;
@@ -53,7 +55,6 @@ namespace MassHell_Library
             // Create command operation and execute it
             Command command = new MovementCommand(movement, direction, moving, this);
             command.Execute();
-            // Add command to undo list
         }
 
         public bool isMoving()

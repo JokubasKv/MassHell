@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Xml.Linq;
 using System.Numerics;
+using System.Collections.Generic;
 
 namespace MassHell_WPF
 {
@@ -22,7 +23,7 @@ namespace MassHell_WPF
     {
         private HubConnection? connection;
         int initialSpeed = 25;
-        Player player;
+        Player clientPlayer;
 
         PeriodicTimer gametimer = new PeriodicTimer(TimeSpan.FromMilliseconds(25));
 
@@ -56,21 +57,21 @@ namespace MassHell_WPF
                 }
             }
 
-            Tile tile = new Tile(Canvas.GetLeft(playerImage), Canvas.GetTop(playerImage), rotation);
+            //Tile tile = new Tile(Canvas.GetLeft(playerImage), Canvas.GetTop(playerImage), rotation);
             //Username Text field going to be replaced by Player class
-            await connection.InvokeAsync("PlayerConnected",tile,UsernameBox.Text);
+            await connection.InvokeAsync("PlayerConnected",clientPlayer);
             while (await gametimer.WaitForNextTickAsync())
             {
                 // With system.types it is not possible to serialize
                 // string player = JsonSerializer.Serialize(Player1);
                 if (playerImage == null)
                     break;
-                tile = new Tile(Canvas.GetLeft(playerImage), Canvas.GetTop(playerImage), rotation);
+                //tile = new Tile(Canvas.GetLeft(playerImage), Canvas.GetTop(playerImage), rotation);
 
-                if (player.isMoving())
-                    tile = MovePlayer(tile,playerImage);
-                await connection.InvokeAsync("UpdatePlayerPosition", tile,playerImage.Name);
-                rotation = tile.Rotation;
+                if (clientPlayer.isMoving())
+                    MovePlayer(clientPlayer,playerImage);
+                await connection.InvokeAsync("UpdatePlayerPosition", clientPlayer);
+                //rotation = tile.Rotation;
 
             }
         }
@@ -84,80 +85,87 @@ namespace MassHell_WPF
         {
             // Later will be changed to use Player class?
 
-            connection.On<Tile,string>("PlayerConnected",(position,name) =>
+            connection.On<Player>("PlayerConnected",(pplayer) =>
             {
                 //connection.InvokeAsync("CreatePlayer", position, name);
-                CreatePlayer(position, name);
+                CreatePlayerImage(pplayer);
             });
-            // connection.On<Tile,string>("CreatePlayer", (position,name) => CreatePlayer(position,name));
-            connection.On<Tile,string>("MoveOtherPlayer", (player,name) => MoveOtherPlayer(player,name));
+            // connection.On<Tile,string>("CreatePlayer", (position,name) => CreatePlayerImage(position,name));
+            connection.On<Player>("MoveOtherPlayer", (otherPlayer) => MoveOtherPlayer(otherPlayer));
+            connection.On<List<Player>>("DrawOtherPlayers", (otherPlayers) => DrawOtherPlayers(otherPlayers));
             connection.On<Tile, Item>("DrawItem", (position, item) => DrawItem(position, item));
         }
 
-        private void CreatePlayer(Tile position,string name)
+        private void DrawOtherPlayers(List<Player> otherPlayers)
         {
-            if(MainPanel.FindName(name) != null)
+            foreach (Player item in otherPlayers)
+            {
+                CreatePlayerImage(item);
+            }
+        }
+
+        private void CreatePlayerImage(Player p)
+        {
+            if(MainPanel.FindName(p.Name) != null)
             {
                 return;
             }
             //Create Image and add it to the panel
             var user = new Image();
-            user.Name = name;
+            user.Name = p.Name;
             user.Height = 100;
             user.Width = 100;
             Uri resourceUri = new Uri("Images/Varn_token.png", UriKind.Relative);
             user.Source = new BitmapImage(resourceUri);
-            Canvas.SetTop(user, position.XCoordinate);
-            Canvas.SetLeft(user, position.YCoordinate);
-            user.LayoutTransform = new RotateTransform(position.Rotation);  
+            Canvas.SetTop(user, p.XCoordinate);
+            Canvas.SetLeft(user, p.YCoordinate);
+            user.LayoutTransform = new RotateTransform(p.Rotation);  
             MainPanel.Children.Add(user);
 
-            //Create player that this client will control and maintain
-            player = new Player(0, name, position.XCoordinate, position.YCoordinate, initialSpeed, 0, 10, 1);
+
         }
 
         // Changed to Player.cs later?
-        private Tile MovePlayer(Tile playerTile,Image playerImage)
+        private void MovePlayer(Player p,Image playerImage)
         {
-            Canvas.SetLeft(playerImage,playerTile.XCoordinate);
-            Canvas.SetTop(playerImage, playerTile.YCoordinate);
+            Canvas.SetLeft(playerImage,p.XCoordinate);
+            Canvas.SetTop(playerImage, p.YCoordinate);
             double centerX = (Canvas.GetLeft(playerImage) + playerImage.Width / 2);
             double centerY = (Canvas.GetTop(playerImage) + playerImage.Height / 2);
             RotateTransform rotate = new RotateTransform(0, centerX, centerY);
-            if (player.goLeft && Canvas.GetLeft(playerImage) > 3)
+            if (this.clientPlayer.goLeft && Canvas.GetLeft(playerImage) > 3)
             {
-                Canvas.SetLeft(playerImage, Canvas.GetLeft(playerImage) - player.Speed);
+                Canvas.SetLeft(playerImage, Canvas.GetLeft(playerImage) - this.clientPlayer.Speed);
                 rotate.Angle = 90;
 
                 playerImage.LayoutTransform = rotate;
 
             }
-            if (player.goRight && (Canvas.GetLeft(playerImage) + playerImage.Width + 3) < App.Current.MainWindow.ActualWidth)
+            if (this.clientPlayer.goRight && (Canvas.GetLeft(playerImage) + playerImage.Width + 3) < App.Current.MainWindow.ActualWidth)
             {
-                Canvas.SetLeft(playerImage, Canvas.GetLeft(playerImage) + player.Speed);
+                Canvas.SetLeft(playerImage, Canvas.GetLeft(playerImage) + this.clientPlayer.Speed);
                 rotate.Angle = -90;
 
                 playerImage.LayoutTransform = rotate;
             }
-            if (player.goUp && Canvas.GetTop(playerImage) > 15)
+            if (this.clientPlayer.goUp && Canvas.GetTop(playerImage) > 15)
             {
-                Canvas.SetTop(playerImage, Canvas.GetTop(playerImage) - player.Speed);
+                Canvas.SetTop(playerImage, Canvas.GetTop(playerImage) - this.clientPlayer.Speed);
                 rotate.Angle = 180;
 
                 playerImage.LayoutTransform = rotate;
             }
-            if (player.goDown && (Canvas.GetTop(playerImage) + playerImage.Width + 15) < App.Current.MainWindow.ActualHeight)
+            if (this.clientPlayer.goDown && (Canvas.GetTop(playerImage) + playerImage.Width + 15) < App.Current.MainWindow.ActualHeight)
             {
-                Canvas.SetTop(playerImage, Canvas.GetTop(playerImage) + player.Speed);
+                Canvas.SetTop(playerImage, Canvas.GetTop(playerImage) + this.clientPlayer.Speed);
                 rotate.Angle = 0;
 
                 playerImage.LayoutTransform = rotate;
             }
             playerImage.UpdateLayout();
-            playerTile.XCoordinate = Canvas.GetLeft(playerImage);
-            playerTile.YCoordinate = Canvas.GetTop(playerImage);
-            playerTile.Rotation = rotate.Angle;
-            return playerTile;
+            p.XCoordinate = Canvas.GetLeft(playerImage);
+            p.YCoordinate = Canvas.GetTop(playerImage);
+            p.Rotation = rotate.Angle;
         }
 
         public void DrawItem(Tile pos,Item item)
@@ -181,34 +189,37 @@ namespace MassHell_WPF
             user.LayoutTransform = new RotateTransform(pos.Rotation);
             MainPanel.Children.Add(user);
         }
+
         private void RegisterUser_Click(object sender, RoutedEventArgs e)
         {
-            Tile tile = new Tile(0, 0, 0);
-            CreatePlayer(tile,UsernameBox.Text);
+            //Create player that this client will control and maintain
+            clientPlayer = new Player(0, UsernameBox.Text, 0, 0,0, initialSpeed, 0, 10, 1);
+            CreatePlayerImage(clientPlayer);
+
             MainPanel.Visibility = Visibility.Visible;
             MainPanel.Focus();
             MainMenu.Visibility = Visibility.Collapsed;
             GameTimerEvent();
         }
 
-        private void MoveOtherPlayer(Tile player,string name)
+        private void MoveOtherPlayer(Player otherPlayer)
         {
-            Image otherPlayer = new Image();
+            Image otherPlayerImage = new Image();
             for (int i = 0; i < MainPanel.Children.Count; i++)
             {
                 if (MainPanel.Children[i] is Image)
                 {
                     Image temp = (Image)MainPanel.Children[i];
-                    if (temp.Name == name)
+                    if (temp.Name == otherPlayer.Name)
                     {
-                        otherPlayer = temp;
+                        otherPlayerImage = temp;
                     }
                 }
             }
-            Canvas.SetLeft(otherPlayer, player.XCoordinate);
-            Canvas.SetTop(otherPlayer, player.YCoordinate);
-            otherPlayer.LayoutTransform = new RotateTransform(player.Rotation);
-            otherPlayer.UpdateLayout();
+            Canvas.SetLeft(otherPlayerImage, otherPlayer.XCoordinate);
+            Canvas.SetTop(otherPlayerImage, otherPlayer.YCoordinate);
+            otherPlayerImage.LayoutTransform = new RotateTransform(otherPlayer.Rotation);
+            otherPlayerImage.UpdateLayout();
         }
         /// <summary>
         /// Button control pressed down
@@ -219,19 +230,19 @@ namespace MassHell_WPF
         {
             if(e.Key == Key.A)
             {
-                player.MovementCommand("left", true);
+                clientPlayer.MovementCommand("left", true);
             }
             if (e.Key == Key.D)
             {
-                player.MovementCommand("right", true);
+                clientPlayer.MovementCommand("right", true);
             }
             if (e.Key == Key.W)
             {
-                player.MovementCommand("up", true);
+                clientPlayer.MovementCommand("up", true);
             }
             if (e.Key == Key.S)
             {
-                player.MovementCommand("down", true);
+                clientPlayer.MovementCommand("down", true);
             }
             //Images for some reason dont load
             if(e.Key == Key.P)
@@ -240,8 +251,8 @@ namespace MassHell_WPF
             }
             if(e.Key == Key.I)
             {
-                OpenInventory(player.invOpen);
-                player.invOpen = !player.invOpen;
+                OpenInventory(clientPlayer.invOpen);
+                clientPlayer.invOpen = !clientPlayer.invOpen;
             }
             if (e.Key == Key.H)
             {
@@ -267,19 +278,19 @@ namespace MassHell_WPF
         {
             if (e.Key == Key.A)
             {
-                player.MovementCommand("left", false);
+                clientPlayer.MovementCommand("left", false);
             }
             if (e.Key == Key.D)
             {
-                player.MovementCommand("right", false);
+                clientPlayer.MovementCommand("right", false);
             }
             if (e.Key == Key.W)
             {
-                player.MovementCommand("up", false);
+                clientPlayer.MovementCommand("up", false);
             }
             if (e.Key == Key.S)
             {
-                player.MovementCommand("down", false);
+                clientPlayer.MovementCommand("down", false);
             }
         }
     }
