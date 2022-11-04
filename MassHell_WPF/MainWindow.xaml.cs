@@ -21,8 +21,8 @@ namespace MassHell_WPF
     public partial class MainWindow : Window
     {
         private HubConnection? connection;
-        bool goLeft,goRight, goUp, goDown,invOpen = true;
-        int speed = 25;
+        int initialSpeed = 25;
+        Player player;
 
         PeriodicTimer gametimer = new PeriodicTimer(TimeSpan.FromMilliseconds(25));
 
@@ -43,7 +43,7 @@ namespace MassHell_WPF
         private async void GameTimerEvent()
         {
             double rotation = 0;
-            Image player = new Image();
+            Image playerImage = new Image();
             for(int i=0;i<MainPanel.Children.Count;i++)
             {
                 if (MainPanel.Children[i] is Image)
@@ -51,24 +51,25 @@ namespace MassHell_WPF
                     Image temp = (Image)MainPanel.Children[i];
                     if (temp.Name == UsernameBox.Text)
                     {
-                        player = temp;
+                        playerImage = temp;
                     }
                 }
             }
-            Tile tile = new Tile(Canvas.GetLeft(player), Canvas.GetTop(player), rotation);
+
+            Tile tile = new Tile(Canvas.GetLeft(playerImage), Canvas.GetTop(playerImage), rotation);
             //Username Text field going to be replaced by Player class
             await connection.InvokeAsync("PlayerConnected",tile,UsernameBox.Text);
             while (await gametimer.WaitForNextTickAsync())
             {
                 // With system.types it is not possible to serialize
                 // string player = JsonSerializer.Serialize(Player1);
-                if (player == null)
+                if (playerImage == null)
                     break;
-                tile = new Tile(Canvas.GetLeft(player), Canvas.GetTop(player), rotation);
+                tile = new Tile(Canvas.GetLeft(playerImage), Canvas.GetTop(playerImage), rotation);
 
-                if (goLeft | goRight | goUp | goDown)
-                    tile = MovePlayer(tile,player);
-                await connection.InvokeAsync("UpdatePlayerPosition", tile,player.Name);
+                if (player.isMoving())
+                    tile = MovePlayer(tile,playerImage);
+                await connection.InvokeAsync("UpdatePlayerPosition", tile,playerImage.Name);
                 rotation = tile.Rotation;
 
             }
@@ -99,6 +100,7 @@ namespace MassHell_WPF
             {
                 return;
             }
+            //Create Image and add it to the panel
             var user = new Image();
             user.Name = name;
             user.Height = 100;
@@ -109,50 +111,53 @@ namespace MassHell_WPF
             Canvas.SetLeft(user, position.YCoordinate);
             user.LayoutTransform = new RotateTransform(position.Rotation);  
             MainPanel.Children.Add(user);
+
+            //Create player that this client will control and maintain
+            player = new Player(0, name, position.XCoordinate, position.YCoordinate, initialSpeed, 0, 10, 1);
         }
 
         // Changed to Player.cs later?
-        private Tile MovePlayer(Tile player,Image Player)
+        private Tile MovePlayer(Tile playerTile,Image playerImage)
         {
-            Canvas.SetLeft(Player,player.XCoordinate);
-            Canvas.SetTop(Player, player.YCoordinate);
-            double centerX = (Canvas.GetLeft(Player) + Player.Width / 2);
-            double centerY = (Canvas.GetTop(Player) + Player.Height / 2);
+            Canvas.SetLeft(playerImage,playerTile.XCoordinate);
+            Canvas.SetTop(playerImage, playerTile.YCoordinate);
+            double centerX = (Canvas.GetLeft(playerImage) + playerImage.Width / 2);
+            double centerY = (Canvas.GetTop(playerImage) + playerImage.Height / 2);
             RotateTransform rotate = new RotateTransform(0, centerX, centerY);
-            if (goLeft && Canvas.GetLeft(Player) > 3)
+            if (player.goLeft && Canvas.GetLeft(playerImage) > 3)
             {
-                Canvas.SetLeft(Player, Canvas.GetLeft(Player) - speed);
+                Canvas.SetLeft(playerImage, Canvas.GetLeft(playerImage) - player.Speed);
                 rotate.Angle = 90;
 
-                Player.LayoutTransform = rotate;
+                playerImage.LayoutTransform = rotate;
 
             }
-            if (goRight && (Canvas.GetLeft(Player) + Player.Width + 3) < App.Current.MainWindow.ActualWidth)
+            if (player.goRight && (Canvas.GetLeft(playerImage) + playerImage.Width + 3) < App.Current.MainWindow.ActualWidth)
             {
-                Canvas.SetLeft(Player, Canvas.GetLeft(Player) + speed);
+                Canvas.SetLeft(playerImage, Canvas.GetLeft(playerImage) + player.Speed);
                 rotate.Angle = -90;
 
-                Player.LayoutTransform = rotate;
+                playerImage.LayoutTransform = rotate;
             }
-            if (goUp && Canvas.GetTop(Player) > 15)
+            if (player.goUp && Canvas.GetTop(playerImage) > 15)
             {
-                Canvas.SetTop(Player, Canvas.GetTop(Player) - speed);
+                Canvas.SetTop(playerImage, Canvas.GetTop(playerImage) - player.Speed);
                 rotate.Angle = 180;
 
-                Player.LayoutTransform = rotate;
+                playerImage.LayoutTransform = rotate;
             }
-            if (goDown && (Canvas.GetTop(Player) + Player.Width + 15) < App.Current.MainWindow.ActualHeight)
+            if (player.goDown && (Canvas.GetTop(playerImage) + playerImage.Width + 15) < App.Current.MainWindow.ActualHeight)
             {
-                Canvas.SetTop(Player, Canvas.GetTop(Player) + speed);
+                Canvas.SetTop(playerImage, Canvas.GetTop(playerImage) + player.Speed);
                 rotate.Angle = 0;
 
-                Player.LayoutTransform = rotate;
+                playerImage.LayoutTransform = rotate;
             }
-            Player.UpdateLayout();
-            player.XCoordinate = Canvas.GetLeft(Player);
-            player.YCoordinate = Canvas.GetTop(Player);
-            player.Rotation = rotate.Angle;
-            return player;
+            playerImage.UpdateLayout();
+            playerTile.XCoordinate = Canvas.GetLeft(playerImage);
+            playerTile.YCoordinate = Canvas.GetTop(playerImage);
+            playerTile.Rotation = rotate.Angle;
+            return playerTile;
         }
 
         public void DrawItem(Tile pos,Item item)
@@ -214,19 +219,19 @@ namespace MassHell_WPF
         {
             if(e.Key == Key.A)
             {
-                goLeft = true;
+                player.MovementCommand("left", true);
             }
             if (e.Key == Key.D)
             {
-                goRight = true;
+                player.MovementCommand("right", true);
             }
             if (e.Key == Key.W)
             {
-                goUp = true;
+                player.MovementCommand("up", true);
             }
             if (e.Key == Key.S)
             {
-                goDown = true;
+                player.MovementCommand("down", true);
             }
             //Images for some reason dont load
             if(e.Key == Key.P)
@@ -235,8 +240,8 @@ namespace MassHell_WPF
             }
             if(e.Key == Key.I)
             {
-                OpenInventory(invOpen);
-                invOpen = !invOpen;
+                OpenInventory(player.invOpen);
+                player.invOpen = !player.invOpen;
             }
             if (e.Key == Key.H)
             {
@@ -262,19 +267,19 @@ namespace MassHell_WPF
         {
             if (e.Key == Key.A)
             {
-                goLeft = false;
+                player.MovementCommand("left", false);
             }
             if (e.Key == Key.D)
             {
-                goRight = false;
+                player.MovementCommand("right", false);
             }
             if (e.Key == Key.W)
             {
-                goUp = false;
+                player.MovementCommand("up", false);
             }
             if (e.Key == Key.S)
             {
-                goDown = false;
+                player.MovementCommand("down", false);
             }
         }
     }
