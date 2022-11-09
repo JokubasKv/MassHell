@@ -9,9 +9,9 @@ namespace MassHell_Library
     public class WaterWalk :PowerUp, IPowerUp
     {
         public int Duration { get; set; }
-        public WaterWalk()
+        public WaterWalk(int duration)
         {
-            this.Duration = 30;
+            this.Duration = duration;
         }
 
         public int PowerupValue()

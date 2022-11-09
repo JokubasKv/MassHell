@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 namespace MassHell_Library
 {
     /// <summary>
-    /// 
+    /// Powerup factory
     /// </summary>
     public class PowerUpFactory
     {
         /// <summary>
-        /// 
+        /// Gets powerup by given name
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="type">power up name</param>
+        /// <returns>requested power up</returns>
         /// <exception cref="ArgumentNullException"></exception>
         public static IPowerUp getPowerUp(string type)
         {
@@ -30,7 +30,7 @@ namespace MassHell_Library
             }
             else if (type.ToLower().Equals("waterwalk"))
             {
-                objType = new WaterWalk();
+                objType = new WaterWalk(30);
             }
             else if (type.ToLower().Equals("speedpowerup"))
             {
