@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MassHell_Server", "MassHell
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MassHell_WPF", "MassHell_WPF\MassHell_WPF.csproj", "{06D30C82-6CE3-4946-A5DF-C97B0D4B0EA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassHell_Library", "MassHell_Library\MassHell_Library.csproj", "{59393B29-9046-4995-AF51-C91B6A2350D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MassHell_Library", "MassHell_Library\MassHell_Library.csproj", "{59393B29-9046-4995-AF51-C91B6A2350D1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4284A66F-5880-434F-92CE-0D791ED911A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
