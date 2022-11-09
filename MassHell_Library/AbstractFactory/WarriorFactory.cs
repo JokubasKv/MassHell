@@ -12,13 +12,18 @@ namespace MassHell_Library.AbstractFactory
     public class WarriorFactory : EnemyFacotry
     {
         /// <summary>
+        /// Logger to print to console
+        /// </summary>
+        private readonly Logger _logger = Logger.getInstance();
+
+        /// <summary>
         /// Override method to create easy warrior
         /// </summary>
         /// <returns>Easy warrior</returns>
         public override EasyEnemy CreateEasy()
         {
             var result = new EasyWarrior(100, 5, 1f);
-            Console.WriteLine("Easy warrior created! Damage-" + result.Damage + " Health-" + result.Health + " Speed-" + result.Speed);
+            _logger.debug("Easy warrior created! Damage-" + result.Damage + " Health-" + result.Health + " Speed-" + result.Speed);
             return new EasyWarrior(100, 5, 1f);
         }
 
@@ -29,7 +34,7 @@ namespace MassHell_Library.AbstractFactory
         public override MediumEnemy CreateMedium()
         {
             var result = new MediumWarrior(120, 8, 1.2f);
-            Console.WriteLine("Medium warrior created! Damage-" + result.Damage + " Health-" + result.Health + " Speed-" + result.Speed);
+            _logger.debug("Medium warrior created! Damage-" + result.Damage + " Health-" + result.Health + " Speed-" + result.Speed);
             return result;
         }
 
@@ -40,7 +45,7 @@ namespace MassHell_Library.AbstractFactory
         public override HardEnemy CreateHard()
         {
             var result = new HardWarrior(150, 10, 1.5f);
-            Console.WriteLine("Hard warrior created! Damage-" + result.Damage + " Health-" + result.Health + " Speed-" + result.Speed);
+            _logger.debug("Hard warrior created! Damage-" + result.Damage + " Health-" + result.Health + " Speed-" + result.Speed);
             return result;
         }
     }

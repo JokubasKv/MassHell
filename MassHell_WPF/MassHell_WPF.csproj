@@ -8,17 +8,53 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\Mage.png" />
+    <None Remove="Images\Ninja.png" />
     <None Remove="Images\potion.png" />
+    <None Remove="Images\potion2.png" />
+    <None Remove="Images\potion3.png" />
+    <None Remove="Images\potion4.png" />
+    <None Remove="Images\potion5.png" />
+    <None Remove="Images\potion6.png" />
+    <None Remove="Images\potion7.png" />
     <None Remove="Images\sword.png" />
     <None Remove="Images\Varn_token.png" />
+    <None Remove="Images\Warrior.png" />
     <None Remove="Varn_token.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Images\Mage.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Ninja.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\potion.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Images\potion2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\potion3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\potion4.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\potion5.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\potion6.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\potion7.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\sword.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Warrior.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

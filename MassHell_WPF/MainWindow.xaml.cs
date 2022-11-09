@@ -180,13 +180,29 @@ namespace MassHell_WPF
             {
                 resourceUri = new Uri("Images/sword.png", UriKind.Relative);
             }
-            else if (item.Name == "Enemy")
+            else if (item.Name == "Mage")
             {
-                resourceUri = new Uri("Images/Varn_token.png", UriKind.Relative);
+                resourceUri = new Uri("Images/Mage.png", UriKind.Relative);
+            }
+            else if (item.Name == "Ninja")
+            {
+                resourceUri = new Uri("Images/Ninja.png", UriKind.Relative);
+            }
+            else if (item.Name == "Warrior")
+            {
+                resourceUri = new Uri("Images/Warrior.png", UriKind.Relative);
+            }
+            else if (item.Name == "healthboost")
+            {
+                resourceUri = new Uri("Images/potion6.png", UriKind.Relative);
+            }
+            else if (item.Name == "damagepowerup")
+            {
+                resourceUri = new Uri("Images/potion.png", UriKind.Relative);
             }
             else
             {
-                resourceUri = new Uri("Images/potion.png", UriKind.Relative);
+                resourceUri = new Uri("Images/potion7.png", UriKind.Relative);
             }
             user.Source = new BitmapImage(resourceUri);
             Canvas.SetTop(user, pos.XCoordinate + 50);

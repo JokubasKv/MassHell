@@ -12,13 +12,18 @@ namespace MassHell_Library.AbstractFactory
     public class NinjaFactory : EnemyFacotry
     {
         /// <summary>
+        /// Logger to print to console
+        /// </summary>
+        private readonly Logger _logger = Logger.getInstance();
+
+        /// <summary>
         /// Override method to create easy ninja
         /// </summary>
         /// <returns>Easy ninja</returns>
         public override EasyEnemy CreateEasy()
         {
             var result = new EasyNinja(50, 15, 2.0f);
-            Console.WriteLine("Easy ninja created! Damage-" + result.Damage + " Health-" + result.Health + " Speed-" + result.Speed);
+            _logger.debug("Easy ninja created! Damage-" + result.Damage + " Health-" + result.Health + " Speed-" + result.Speed);
             return result;
         }
 
@@ -29,7 +34,7 @@ namespace MassHell_Library.AbstractFactory
         public override MediumEnemy CreateMedium()
         {
             var result = new MediumNinja(60, 25, 2.5f);
-            Console.WriteLine("Medium ninja created! Damage-" + result.Damage + " Health-" + result.Health + " Speed-" + result.Speed);
+            _logger.debug("Medium ninja created! Damage-" + result.Damage + " Health-" + result.Health + " Speed-" + result.Speed);
             return result;
         }
 
@@ -40,7 +45,7 @@ namespace MassHell_Library.AbstractFactory
         public override HardEnemy CreateHard()
         {
             var result = new HardNinja(70, 40, 3.0f);
-            Console.WriteLine("Hard ninja created! Damage-" + result.Damage + " Health-" + result.Health + " Speed-" + result.Speed);
+            _logger.debug("Hard ninja created! Damage-" + result.Damage + " Health-" + result.Health + " Speed-" + result.Speed);
             return result;
         }
     }

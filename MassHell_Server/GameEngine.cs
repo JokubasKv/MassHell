@@ -11,25 +11,29 @@ namespace MassHell_Server
 
         static List<Player> connectedPlayers=new List<Player>();
 
+        /// <summary>
+        /// Logger to print to console
+        /// </summary>
+        private readonly Logger _logger = Logger.getInstance();
+
 
         public async Task PlayerConnected(Player p)
         {
             //If the playeris not the first, draw every other connected player, so if somebody is late they can still see others.
             if (connectedPlayers.Count > 0) {
-                Console.WriteLine("Telling "+ p.Name + " to draw others");
+                _logger.debug("Telling " + p.Name + " to draw others");
                 await Clients.Caller.SendAsync("DrawOtherPlayers", connectedPlayers);
-                InnerHolderSingleton.getInstance();
             }
             //Add player to connected players
             connectedPlayers.Add(p);
-            Console.WriteLine("New connected " + p.Name + " | " + connectedPlayers.Count);
+            _logger.debug("New connected " + p.Name + " | " + connectedPlayers.Count);
 
             //Tell all other players about new player
             await Clients.Others.SendAsync("PlayerConnected", p);
         }
        /* public async Task CreatePlayer(Player p)
         {
-            Console.WriteLine("Player created");
+            _logger.debug("Player created");
             Console.WriteLine("Player Name : {0}", p.Name);
             await Clients.Others.SendAsync("CreatePlayer", p);
         }*/
@@ -45,18 +49,41 @@ namespace MassHell_Server
             int widthRandom = pos.Next(1, 1280);
             Tile position = new Tile(widthRandom, heightRandom, 0);
             float chance = pos.NextSingle();
-            Item returningItem;
+            Item returningItem = new Item();
             if (chance > 0.5)
             {
                 // Change not to be hardcoded
                 returningItem = new Weapon("InterestingName", 50, "Legendary");
-                Console.WriteLine("Weapon Created");
+                _logger.debug("Weapon Created");
 
             }
             else
             {
-                returningItem = (Item)PowerUpFactory.getPowerUp("speedpowerup");
+                //returningItem = (Item)PowerUpFactory.getPowerUp("speedpowerup");
                 //returningItem = new SpeedPowerUp(1.5f,"SPEED",20);
+                Random random = new Random();
+                int probbability = random.Next(0, 300);
+                if (probbability >= 100 && probbability <= 200)
+                {
+                    // Creating powerups
+                    Random random2 = new Random();
+                    int probbability2 = random2.Next(0, 300);
+                    if (probbability2 >= 100 && probbability2 <= 200)
+                    {
+                        returningItem = (Item)PowerUpFactory.getPowerUp("healthboost");
+                        returningItem.Name = "healthboost";
+                    }
+                    else if (probbability2 > 200)
+                    {
+                        returningItem = (Item)PowerUpFactory.getPowerUp("damagepowerup");
+                        returningItem.Name = "damagepowerup";
+                    }
+                    else
+                    {
+                        returningItem = (Item)PowerUpFactory.getPowerUp("speedpowerup");
+                        returningItem.Name = "speedpowerup";
+                    }
+                }
 
             }
             await Clients.All.SendAsync("DrawItem", position, returningItem);
@@ -75,7 +102,7 @@ namespace MassHell_Server
 
             Random random = new Random();
             int chance = random.Next(0, 300);
-            Item returningItem;
+            Item returningItem = new Item();
 
             if (chance >= 100 && chance <= 200)
             {
@@ -97,7 +124,7 @@ namespace MassHell_Server
                     EnemyFacotry factory = new MageFactory();
                     returningItem = factory.CreateHard();
                 }
-
+                returningItem.Name = "Mage";
             }
             else if(chance > 200)
             {
@@ -119,6 +146,7 @@ namespace MassHell_Server
                     EnemyFacotry factory = new WarriorFactory();
                     returningItem = factory.CreateHard();
                 }
+                returningItem.Name = "Warrior";
             }
             else
             {
@@ -140,8 +168,9 @@ namespace MassHell_Server
                     EnemyFacotry factory = new NinjaFactory();
                     returningItem = factory.CreateHard();
                 }
+                returningItem.Name = "Ninja";
             }
-            returningItem.Name = "Enemy";
+            var test = returningItem.Name;
             await Clients.All.SendAsync("DrawItem", position, returningItem);
         }
 
