@@ -56,6 +56,13 @@ namespace MassHell_WPF
                     }
                 }
             }
+            Label label = new Label();
+            label.Name = "McLabel";
+            label.Width = 240;
+            label.Height = 30;
+            label.Content = "Lots of words";
+
+            MainPanel.Children.Add(label);
 
             //Tile tile = new Tile(Canvas.GetLeft(playerImage), Canvas.GetTop(playerImage), rotation);
             //Username Text field going to be replaced by Player class
@@ -69,7 +76,12 @@ namespace MassHell_WPF
                 //tile = new Tile(Canvas.GetLeft(playerImage), Canvas.GetTop(playerImage), rotation);
 
                 if (clientPlayer.isMoving())
-                    MovePlayer(clientPlayer,playerImage);
+                {
+                    //MovePlayer(clientPlayer,playerImage);
+                    //NewMovePlayer(clientPlayer);
+                    NewerMovePlayer(clientPlayer);
+                    MoveFormObject(new FormObject(label.Name, clientPlayer.XCoordinate, clientPlayer.YCoordinate, clientPlayer.Rotation));
+                }
                 await connection.InvokeAsync("UpdatePlayerPosition", clientPlayer);
                 //rotation = tile.Rotation;
 
@@ -168,6 +180,102 @@ namespace MassHell_WPF
             p.Rotation = rotate.Angle;
         }
 
+        private void NewMovePlayer(Player p)
+        {
+            RotateTransform rotate = new RotateTransform(0, p.XCoordinate, p.YCoordinate);
+            if (this.clientPlayer.goLeft && p.XCoordinate > 3)
+            {
+                p.XCoordinate -= this.clientPlayer.Speed;
+                rotate.Angle = 90;
+
+            }
+            if (this.clientPlayer.goRight && (p.XCoordinate) < App.Current.MainWindow.ActualWidth)
+            {
+                p.XCoordinate += this.clientPlayer.Speed;
+                rotate.Angle = -90;
+            }
+            if (this.clientPlayer.goUp && p.YCoordinate > 15)
+            {
+                p.YCoordinate -= this.clientPlayer.Speed;
+                rotate.Angle = 180;
+            }
+            if (this.clientPlayer.goDown && p.YCoordinate < App.Current.MainWindow.ActualHeight)
+            {
+                p.YCoordinate += this.clientPlayer.Speed;
+                rotate.Angle = 0;
+            }
+
+            MoveFormObject(new FormObject(p.Name, p.XCoordinate, p.YCoordinate, p.Rotation));
+
+            p.Rotation = rotate.Angle;
+        }
+        private void NewerMovePlayer(Player p)
+        {
+            FormObject temp = new FormObject("",0,0,0);
+
+            if (p.goLeft && p.XCoordinate > 3)
+            {
+                temp = p.Move("left", clientPlayer.Speed);
+            }
+            if (p.goRight && (p.XCoordinate) < App.Current.MainWindow.ActualWidth)
+            {
+                temp = p.Move("right", clientPlayer.Speed);
+            }
+            if (p.goUp && p.YCoordinate > 15)
+            {
+                temp = p.Move("up", clientPlayer.Speed);
+            }
+            if (p.goDown && p.YCoordinate < App.Current.MainWindow.ActualHeight)
+            {
+                temp = p.Move("down", clientPlayer.Speed);
+            }
+
+            MoveFormObject(temp);
+
+        }
+        private void MoveFormObject(FormObject formObject)
+        {
+            UIElement obj= new UIElement();
+            //var obj = (UIElement)MainPanel.FindName(formObject.name);
+            for (int i = 0; i < MainPanel.Children.Count; i++)
+            {
+                if (MainPanel.Children[i] is Image)
+                {
+                    Image temp = (Image)MainPanel.Children[i];
+                    if (temp.Name == formObject.name)
+                    {
+                        obj = temp;
+                    }
+                }
+                if (MainPanel.Children[i] is Label)
+                {
+                    Label temp = (Label)MainPanel.Children[i];
+                    if (temp.Name == formObject.name)
+                    {
+                        obj = temp;
+                    }
+                }
+            }
+
+            if (obj is Image)
+            {
+                Image temp = (Image)obj;
+                Canvas.SetLeft(temp, formObject.XCoordinate);
+                Canvas.SetTop(temp, formObject.YCoordinate);
+                temp.LayoutTransform = new RotateTransform(formObject.Rotation);
+
+                Debug.WriteLine(obj);
+            }
+            if(obj is Label)
+            {
+                Label temp = (Label)obj;
+                Canvas.SetLeft(obj, formObject.XCoordinate);
+                Canvas.SetTop(temp, formObject.YCoordinate);
+
+                Debug.WriteLine(obj);
+            }
+        }
+
         public void DrawItem(Tile pos,Item item)
         {
             var user = new Image();
@@ -251,19 +359,19 @@ namespace MassHell_WPF
         {
             if(e.Key == Key.A)
             {
-                clientPlayer.MovementCommand("left", true);
+                clientPlayer.goLeft = true;
             }
             if (e.Key == Key.D)
             {
-                clientPlayer.MovementCommand("right", true);
+                clientPlayer.goRight = true;
             }
             if (e.Key == Key.W)
             {
-                clientPlayer.MovementCommand("up", true);
+                clientPlayer.goUp = true;
             }
             if (e.Key == Key.S)
             {
-                clientPlayer.MovementCommand("down", true);
+                clientPlayer.goDown = true;
             }
             //Images for some reason dont load
             if(e.Key == Key.P)
@@ -278,6 +386,10 @@ namespace MassHell_WPF
             if (e.Key == Key.H)
             {
                 connection.InvokeAsync("SpawnEnemy");
+            }
+            if (e.Key == Key.U)
+            {
+               MoveFormObject(clientPlayer.UndoMove());
             }
         }
         public void OpenInventory(bool open)
@@ -299,19 +411,19 @@ namespace MassHell_WPF
         {
             if (e.Key == Key.A)
             {
-                clientPlayer.MovementCommand("left", false);
+                clientPlayer.goLeft = false;
             }
             if (e.Key == Key.D)
             {
-                clientPlayer.MovementCommand("right", false);
+                clientPlayer.goRight = false;
             }
             if (e.Key == Key.W)
             {
-                clientPlayer.MovementCommand("up", false);
+                clientPlayer.goUp = false;
             }
             if (e.Key == Key.S)
             {
-                clientPlayer.MovementCommand("down", false);
+                clientPlayer.goDown = false;
             }
         }
     }

@@ -8,7 +8,8 @@ namespace MassHell_Library
 {
     public abstract class Command
     {
-        public abstract void Execute();
+        public abstract void Move();
+        public abstract void Unmove();
     }
     /// <summary>
     /// The 'ConcreteCommand' class
@@ -16,22 +17,40 @@ namespace MassHell_Library
     public class MovementCommand : Command
     {
         string direction;
-        bool moving;
-        Player player;
-        Movement calculator;
+        double distance;
+        Tile entity;
+        Movement movement;
         // Constructor
         public MovementCommand(Movement calculator,
-            string direction, bool moving, Player player)
+            string direction, double distance, Tile entity)
         {
-            this.calculator = calculator;
+            this.movement = calculator;
             this.direction = direction;
-            this.moving = moving;
-            this.player = player;
+            this.distance = distance;
+            this.entity = entity;
         }
         // Execute new command
-        public override void Execute()
+        public override void Move()
         {
-            calculator.Operation(direction, moving, player);
+            movement.Operation(direction, distance, entity);
+        }
+        public override void Unmove()
+        {
+            movement.Operation(Undo(direction), distance, entity);
+        }
+
+        private string Undo(string direction)
+        {
+            switch (direction)
+            {
+                case "left": return "right";
+                case "right": return "left";
+                case "up": return "down";
+                case "down": return "up";
+                default:
+                    throw new
+             ArgumentException("@operator");
+            }
         }
     }
     /// <summary>
@@ -39,14 +58,26 @@ namespace MassHell_Library
     /// </summary>
     public class Movement
     {
-        public void Operation(string @operator, bool moving, Player player)
+        public void Operation(string direction, double distance, Tile player)
         {
-            switch (@operator)
+            switch (direction)
             {
-                case "left": player.goLeft = moving; break;
-                case "right": player.goRight = moving; break;
-                case "up": player.goUp = moving; break;
-                case "down": player.goDown = moving; break;
+                case "left":
+                    player.XCoordinate -= distance;
+                    player.Rotation = 90;
+                    break;
+                case "right":
+                    player.XCoordinate += distance;
+                    player.Rotation = -90;
+                    break;
+                case "up":
+                    player.YCoordinate -= distance;
+                    player.Rotation = 180;
+                    break;
+                case "down":
+                    player.YCoordinate += distance;
+                    player.Rotation = 0;
+                    break;
             }
         }
     }

@@ -27,7 +27,6 @@ namespace MassHell_Library
         public bool invOpen = true;
 
 
-        Movement movement = new Movement();
 
 
 
@@ -50,12 +49,37 @@ namespace MassHell_Library
             Inventory = new Item[10];
         }
 
-        public void MovementCommand(string direction, bool moving)
+        Movement movement = new Movement();
+        List<Command> commands = new List<Command>();
+        int current = 0;
+        public FormObject UndoMove()
+        {
+
+                if (current > 0)
+                {
+                    Command command = commands[--current] as Command;
+                    command.Unmove();
+                }
+            return new FormObject(this.Name, this.XCoordinate, this.YCoordinate, this.Rotation);
+            
+        }
+        public FormObject Move(string direction, double distance)
         {
             // Create command operation and execute it
-            Command command = new MovementCommand(movement, direction, moving, this);
-            command.Execute();
+            Command command = new MovementCommand(movement, direction, distance, this);
+            command.Move();
+
+
+
+            // Add command to undo list
+            commands.Add(command);
+            current++;
+
+            return new FormObject(this.Name, this.XCoordinate, this.YCoordinate, this.Rotation);
         }
+
+
+
 
         public bool isMoving()
         {
