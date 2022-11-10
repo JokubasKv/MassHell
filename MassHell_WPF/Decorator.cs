@@ -191,7 +191,7 @@ namespace MassHell_WPF
         }
         public override void Create(string content)
         {
-            Debug.WriteLine($"ConreteShowwage {FormObject}");
+            //Debug.WriteLine($"ConreteShowwage {FormObject}");
         }
     }
     /// <summary>
@@ -230,7 +230,7 @@ namespace MassHell_WPF
             //Canvas foundCanvas = UIHelper.FindChild<Canvas>(Application.Current.MainWindow, "MainPanel");
             //foundCanvas.Children.Add(l);
 
-            Debug.WriteLine($"Label Decorator Name= {base.component.FormObject.name} X={base.component.FormObject.XCoordinate} Y ={base.component.FormObject.YCoordinate}");
+            //Debug.WriteLine($"Label Decorator Name= {base.component.FormObject.name} X={base.component.FormObject.XCoordinate} Y ={base.component.FormObject.YCoordinate}");
 
 
             Canvas.SetLeft(l, base.component.FormObject.XCoordinate);
@@ -254,7 +254,7 @@ namespace MassHell_WPF
         //Canvas foundCanvas = UIHelper.FindChild<Canvas>(Application.Current.MainWindow, "MainPanel");
         //foundCanvas.Children.Add(l);
 
-        Debug.WriteLine($"Image Decorator Name= {base.component.FormObject.name} X={base.component.FormObject.XCoordinate} Y ={base.component.FormObject.YCoordinate}");
+        //Debug.WriteLine($"Image Decorator Name= {base.component.FormObject.name} X={base.component.FormObject.XCoordinate} Y ={base.component.FormObject.YCoordinate}");
 
 
             Canvas.SetLeft(imag, base.component.FormObject.XCoordinate);
@@ -279,7 +279,7 @@ namespace MassHell_WPF
             //Canvas foundCanvas = UIHelper.FindChild<Canvas>(Application.Current.MainWindow, "MainPanel");
             //foundCanvas.Children.Add(l);
 
-            Debug.WriteLine($"Rectangle Decorator Name= {base.component.FormObject.name} X={base.component.FormObject.XCoordinate} Y ={base.component.FormObject.YCoordinate}");
+            //Debug.WriteLine($"Rectangle Decorator Name= {base.component.FormObject.name} X={base.component.FormObject.XCoordinate} Y ={base.component.FormObject.YCoordinate}");
 
 
             Canvas.SetLeft(rect, base.component.FormObject.XCoordinate);

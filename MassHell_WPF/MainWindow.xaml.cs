@@ -87,7 +87,7 @@ namespace MassHell_WPF
                     NewerMovePlayer(clientPlayer);
                     MoveFormObject(new FormObject(label.Name, clientPlayer.XCoordinate, clientPlayer.YCoordinate, clientPlayer.Rotation));
                 }
-                await connection.InvokeAsync("UpdatePos", clientPlayer);
+                await connection.InvokeAsync("UpdatePlayerPosition", clientPlayer);
                 //rotation = tile.Rotation;
 
             }

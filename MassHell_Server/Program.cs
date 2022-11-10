@@ -31,7 +31,7 @@ internal class Program
         //app.MapRazorPages();
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapHub<NotifyingSubSystem>("/gameengine");
+            endpoints.MapHub<GameEngine>("/gameengine");
         });
 
         app.Run();

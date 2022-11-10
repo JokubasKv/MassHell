@@ -5,46 +5,56 @@ using MassHell_Library.AbstractFactory;
 
 namespace MassHell_Server
 {
-    public class GameEngine
+    public class GameEngine : Hub
     {
-        private List<Player> connectedPlayers = new List<Player>();
+        private static List<Player> connectedPlayers = new List<Player>();
         private readonly Logger _logger = Logger.getInstance();
 
         //Facade
-        public NotifyingSubSystem notifs;
-        public CommunicationSubSystem comms;
-        public SpawningSubSystem spawning;
+        //public NotifyingSubSystem notifs = new NotifyingSubSystem();
+        public CommunicationSubSystem comms = new CommunicationSubSystem();
+        public SpawningSubSystem spawning = new SpawningSubSystem();
 
-        public async void PlayerConnected(Player p)
+        public async void ConnectPlayer(Player p)
         {
             //Add player to connected players
-            connectedPlayers.Add(p);
             _logger.debug("New connected " + p.Name + " | " + connectedPlayers.Count);
-            notifs.AppendPlayer(p);
-            await notifs.ConnectPlayer(p);
+            //If the player is not the first, draw every other connected player, so if somebody is late they can still see others.
+            if (connectedPlayers.Count > 0)
+            {
+                _logger.debug("Telling " + p.Name + " to draw others");
+                await Clients.Caller.SendAsync("DrawOtherPlayers", connectedPlayers);
+            }
+            connectedPlayers.Add(p);
+            _logger.debug(connectedPlayers[0].ToString());
+
+
+
+            //Tell all other players about new player
+            await Clients.Others.SendAsync("PlayerConnected", p);
             comms.AppendPlayer(p);
         }
-        public async void UpdatePlayerPosition(Player p)
+        public async Task UpdatePlayerPosition(Player p)
         {
             //Send every other client updated movement
-            await notifs.UpdatePos(p);
+            await Clients.Others.SendAsync("MoveOtherPlayer", p);
 
         }
         // Add more functionality to differ the use of facade
-        public void SpawnEnemy()
+        public async Task SpawnEnemy()
         {
             Tile pos;
             Item returningItem;
             spawning.SpawnEnemy(out pos,out returningItem);
-            notifs.DrawItem(pos, returningItem);
+            await Clients.All.SendAsync("DrawItem", pos, returningItem);
         }
         // Add more functionality to differ the use of facade
-        public void SpawnItem()
+        public async Task SpawnItem()
         {
             Tile pos;
             Item returningItem;
             spawning.SpawnItem(out pos, out returningItem);
-            notifs.DrawItem(pos, returningItem);
+            await Clients.All.SendAsync("DrawItem", pos, returningItem);
 
         }
         public Map CreateMap()
