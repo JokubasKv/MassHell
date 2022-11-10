@@ -1,28 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace MassHell_Library
 {
-    public class Item : Clonable
+    public abstract class Clonable
     {
-        public string Name { get; set; }
-
-
-        public override Item DeepCopy()
+        //Protoype implementation
+        public Item ShallowCopy()
         {
-            Item clone = (Item)this.MemberwiseClone();
-            clone.Name = string.Copy(Name);
-            return clone;
+            return (Item)this.MemberwiseClone();
         }
 
+        public virtual Item  DeepCopy()
+        {
+            Item clone = (Item)this.MemberwiseClone();
+            return clone;
+        }
     }
-
-
-
 }

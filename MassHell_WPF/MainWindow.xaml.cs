@@ -13,6 +13,7 @@ using System.Windows.Threading;
 using System.Xml.Linq;
 using System.Numerics;
 using System.Collections.Generic;
+using System.Runtime;
 
 namespace MassHell_WPF
 {
@@ -24,6 +25,7 @@ namespace MassHell_WPF
         private HubConnection? connection;
         int initialSpeed = 25;
         Player clientPlayer;
+
 
         PeriodicTimer gametimer = new PeriodicTimer(TimeSpan.FromMilliseconds(25));
 
@@ -69,7 +71,7 @@ namespace MassHell_WPF
 
             //Tile tile = new Tile(Canvas.GetLeft(playerImage), Canvas.GetTop(playerImage), rotation);
             //Username Text field going to be replaced by Player class
-            await connection.InvokeAsync("PlayerConnected", clientPlayer);
+            await connection.InvokeAsync("ConnectPlayer", clientPlayer);
             while (await gametimer.WaitForNextTickAsync())
             {
                 // With system.types it is not possible to serialize
@@ -85,7 +87,7 @@ namespace MassHell_WPF
                     NewerMovePlayer(clientPlayer);
                     MoveFormObject(new FormObject(label.Name, clientPlayer.XCoordinate, clientPlayer.YCoordinate, clientPlayer.Rotation));
                 }
-                await connection.InvokeAsync("UpdatePlayerPosition", clientPlayer);
+                await connection.InvokeAsync("UpdatePos", clientPlayer);
                 //rotation = tile.Rotation;
 
             }
@@ -394,8 +396,57 @@ namespace MassHell_WPF
             {
                MoveFormObject(clientPlayer.UndoMove());
             }
+            if (e.Key == Key.O)
+            {
+                var concrete = new ConreteShowwage(new FormObject("base", 0, 0, 0));
+                var label = new LabelDecorator(concrete);
+                label.Create("Hello");
+
+                var image = new ImageDecorator(label);
+                var rectangle = new RectangleDecorator(image);
+                rectangle.Create("Stuff");
+            }
+
+            if (e.Key == Key.L)
+            {
+
+                Item p1 = new Item();
+                p1.Name = "First item";
+
+                // Perform a shallow copy of p1 and assign it to p2.
+                Item p2 = p1.ShallowCopy();
+                // Make a deep copy of p1 and assign it to p3.
+                Item p3 = p1.DeepCopy();
+
+                // Display values of p1, p2 and p3.
+                Debug.WriteLine("Original values of p1, p2, p3:");
+                Debug.WriteLine("   p1 instance values: ");
+                DisplayValues(p1);
+                Debug.WriteLine("   p2 instance values:");
+                DisplayValues(p2);
+                Debug.WriteLine("   p3 instance values:");
+                DisplayValues(p3);
+
+                // Change the value of p1 properties and display the values of p1,
+                // p2 and p3.
+                p1.Name = "A different name";
+                Debug.WriteLine("\nValues of p1, p2 and p3 after changes to p1:");
+                Debug.WriteLine("   p1 instance values: ");
+                DisplayValues(p1);
+                Debug.WriteLine("   p2 instance values (reference values have changed):");
+                DisplayValues(p2);
+                Debug.WriteLine("   p3 instance values (everything was kept the same):");
+                DisplayValues(p3);
+            }
         }
-        public void OpenInventory(bool open)
+    
+
+    public static void DisplayValues(Item p)
+    {
+            Debug.WriteLine("      Name: {0:s}, Hashcode: {1:d},",
+            p.Name, p.GetHashCode());
+    }
+    public void OpenInventory(bool open)
         {
             if (open)
             {
@@ -429,5 +480,7 @@ namespace MassHell_WPF
                 clientPlayer.goDown = false;
             }
         }
+
+
     }
 }

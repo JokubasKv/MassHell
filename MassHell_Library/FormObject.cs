@@ -13,5 +13,10 @@ namespace MassHell_Library
         {
             this.name = name;
         }
+
+        public override string ToString()
+        {
+            return new string($"Name= {name} X={XCoordinate} Y={YCoordinate} R={Rotation}");
+        }
     }
 }
