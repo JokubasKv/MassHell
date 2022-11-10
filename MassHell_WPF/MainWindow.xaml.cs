@@ -27,12 +27,15 @@ namespace MassHell_WPF
 
         PeriodicTimer gametimer = new PeriodicTimer(TimeSpan.FromMilliseconds(25));
 
+
+        // Realise check if disconnected. Needed for future
         public MainWindow()
         {
             InitializeComponent();
             connection = new HubConnectionBuilder()
                 .WithUrl("https://localhost:7200/gameengine")
                 .WithAutomaticReconnect()
+                
                 .Build();
             MainPanel.Focus();
             StartConnection();
@@ -45,7 +48,7 @@ namespace MassHell_WPF
         {
             double rotation = 0;
             Image playerImage = new Image();
-            for(int i=0;i<MainPanel.Children.Count;i++)
+            for (int i = 0; i < MainPanel.Children.Count; i++)
             {
                 if (MainPanel.Children[i] is Image)
                 {
@@ -66,7 +69,7 @@ namespace MassHell_WPF
 
             //Tile tile = new Tile(Canvas.GetLeft(playerImage), Canvas.GetTop(playerImage), rotation);
             //Username Text field going to be replaced by Player class
-            await connection.InvokeAsync("PlayerConnected",clientPlayer);
+            await connection.InvokeAsync("PlayerConnected", clientPlayer);
             while (await gametimer.WaitForNextTickAsync())
             {
                 // With system.types it is not possible to serialize
@@ -97,7 +100,7 @@ namespace MassHell_WPF
         {
             // Later will be changed to use Player class?
 
-            connection.On<Player>("PlayerConnected",(pplayer) =>
+            connection.On<Player>("PlayerConnected", (pplayer) =>
             {
                 //connection.InvokeAsync("CreatePlayer", position, name);
                 CreatePlayerImage(pplayer);
@@ -118,7 +121,7 @@ namespace MassHell_WPF
 
         private void CreatePlayerImage(Player p)
         {
-            if(MainPanel.FindName(p.Name) != null)
+            if (MainPanel.FindName(p.Name) != null)
             {
                 return;
             }
@@ -131,16 +134,16 @@ namespace MassHell_WPF
             user.Source = new BitmapImage(resourceUri);
             Canvas.SetTop(user, p.XCoordinate);
             Canvas.SetLeft(user, p.YCoordinate);
-            user.LayoutTransform = new RotateTransform(p.Rotation);  
+            user.LayoutTransform = new RotateTransform(p.Rotation);
             MainPanel.Children.Add(user);
 
 
         }
 
         // Changed to Player.cs later?
-        private void MovePlayer(Player p,Image playerImage)
+        private void MovePlayer(Player p, Image playerImage)
         {
-            Canvas.SetLeft(playerImage,p.XCoordinate);
+            Canvas.SetLeft(playerImage, p.XCoordinate);
             Canvas.SetTop(playerImage, p.YCoordinate);
             double centerX = (Canvas.GetLeft(playerImage) + playerImage.Width / 2);
             double centerY = (Canvas.GetTop(playerImage) + playerImage.Height / 2);
@@ -322,7 +325,7 @@ namespace MassHell_WPF
         private void RegisterUser_Click(object sender, RoutedEventArgs e)
         {
             //Create player that this client will control and maintain
-            clientPlayer = new Player(0, UsernameBox.Text, 0, 0,0, initialSpeed, 0, 10, 1);
+            clientPlayer = new Player(0, UsernameBox.Text, 0, 0, 0, initialSpeed, 0, 10, 1);
             CreatePlayerImage(clientPlayer);
 
             MainPanel.Visibility = Visibility.Visible;
@@ -357,7 +360,7 @@ namespace MassHell_WPF
         /// <param name="e"></param>
         private void MainPanel_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.A)
+            if (e.Key == Key.A)
             {
                 clientPlayer.goLeft = true;
             }
@@ -374,11 +377,11 @@ namespace MassHell_WPF
                 clientPlayer.goDown = true;
             }
             //Images for some reason dont load
-            if(e.Key == Key.P)
+            if (e.Key == Key.P)
             {
                 connection.InvokeAsync("SpawnItem");
             }
-            if(e.Key == Key.I)
+            if (e.Key == Key.I)
             {
                 OpenInventory(clientPlayer.invOpen);
                 clientPlayer.invOpen = !clientPlayer.invOpen;
@@ -394,7 +397,7 @@ namespace MassHell_WPF
         }
         public void OpenInventory(bool open)
         {
-            if(open)
+            if (open)
             {
                 Inventory.Visibility = Visibility.Visible;
                 Inventory.Focus();
