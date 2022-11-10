@@ -10,7 +10,7 @@ namespace MassHell_Library
     public abstract class Clonable
     {
         //Protoype implementation
-        public Item ShallowCopy()
+        public virtual Item ShallowCopy()
         {
             return (Item)this.MemberwiseClone();
         }

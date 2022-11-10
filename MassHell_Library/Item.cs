@@ -14,6 +14,10 @@ namespace MassHell_Library
         public string Name { get; set; }
 
 
+        public override Item ShallowCopy()
+        {
+            return (Item)this.MemberwiseClone();
+        }
         public override Item DeepCopy()
         {
             Item clone = (Item)this.MemberwiseClone();

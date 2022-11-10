@@ -11,9 +11,7 @@ namespace MassHell_Library
         public abstract void Move();
         public abstract void Unmove();
     }
-    /// <summary>
-    /// The 'ConcreteCommand' class
-    /// </summary>
+
     public class MovementCommand : Command
     {
         string direction;
@@ -53,9 +51,7 @@ namespace MassHell_Library
             }
         }
     }
-    /// <summary>
-    /// The 'Receiver' class
-    /// </summary>
+
     public class Movement
     {
         public void Operation(string direction, double distance, Tile player)
