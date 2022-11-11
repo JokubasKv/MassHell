@@ -14,6 +14,7 @@ using System.Xml.Linq;
 using System.Numerics;
 using System.Collections.Generic;
 using System.Runtime;
+using System.Runtime.InteropServices;
 
 namespace MassHell_WPF
 {
@@ -269,7 +270,7 @@ namespace MassHell_WPF
                 Canvas.SetTop(temp, formObject.YCoordinate);
                 temp.LayoutTransform = new RotateTransform(formObject.Rotation);
 
-                Debug.WriteLine(obj);
+                //Debug.WriteLine(obj);
             }
             if(obj is Label)
             {
@@ -277,7 +278,7 @@ namespace MassHell_WPF
                 Canvas.SetLeft(obj, formObject.XCoordinate);
                 Canvas.SetTop(temp, formObject.YCoordinate);
 
-                Debug.WriteLine(obj);
+                //Debug.WriteLine(obj);
             }
         }
 
@@ -399,12 +400,12 @@ namespace MassHell_WPF
             if (e.Key == Key.O)
             {
                 var concrete = new ConreteShowwage(new FormObject("base", 0, 0, 0));
+                Debug.WriteLine(concrete.FormObject.name);
                 var label = new LabelDecorator(concrete);
                 label.Create("Hello");
 
                 var image = new ImageDecorator(label);
-                var rectangle = new RectangleDecorator(image);
-                rectangle.Create("Stuff");
+                image.Create("Stuff");
             }
 
             if (e.Key == Key.L)
@@ -443,7 +444,9 @@ namespace MassHell_WPF
 
     public static void DisplayValues(Item p)
     {
-            Debug.WriteLine("      Name: {0:s}, Hashcode: {1:d},",
+            GCHandle handle = GCHandle.Alloc(p, GCHandleType.WeakTrackResurrection);
+            long address = GCHandle.ToIntPtr(handle).ToInt64();
+            Debug.WriteLine("      Name: {0:s}, Hashcode: {1:d}, Memory: {1:d}",
             p.Name, p.GetHashCode());
     }
     public void OpenInventory(bool open)

@@ -220,21 +220,23 @@ namespace MassHell_WPF
         public LabelDecorator(Showwage show)
             : base(show)
         {
+            FormObject = show.FormObject;
+            this.FormObject.name += "_label";
         }
         public override void Create(string content)
         {
-            l.Name = "label"+ base.component.FormObject.name;
+            l.Name = FormObject.name;
             l.Width = 240;
             l.Height = 30;
             l.Content = content;
             //Canvas foundCanvas = UIHelper.FindChild<Canvas>(Application.Current.MainWindow, "MainPanel");
             //foundCanvas.Children.Add(l);
 
-            //Debug.WriteLine($"Label Decorator Name= {base.component.FormObject.name} X={base.component.FormObject.XCoordinate} Y ={base.component.FormObject.YCoordinate}");
+            Debug.WriteLine($"Label Decorator Name= {base.component.FormObject.name} X={base.component.FormObject.XCoordinate} Y ={base.component.FormObject.YCoordinate}");
 
 
-            Canvas.SetLeft(l, base.component.FormObject.XCoordinate);
-            Canvas.SetTop(l, base.component.FormObject.YCoordinate);
+            Canvas.SetLeft(l, component.FormObject.XCoordinate);
+            Canvas.SetTop(l, component.FormObject.YCoordinate);
 
             base.Create(content);
         }
@@ -246,19 +248,21 @@ namespace MassHell_WPF
         public ImageDecorator(Showwage show)
             : base(show)
         {
+            FormObject = show.FormObject;
+            FormObject.name += "_image";
         }
         public override void Create(string content)
         {
-            imag.Name = "label" + base.component.FormObject.name;
+            imag.Name = component.FormObject.name;
             imag.Source = new BitmapImage(new Uri(content, UriKind.Relative));
         //Canvas foundCanvas = UIHelper.FindChild<Canvas>(Application.Current.MainWindow, "MainPanel");
         //foundCanvas.Children.Add(l);
 
-        //Debug.WriteLine($"Image Decorator Name= {base.component.FormObject.name} X={base.component.FormObject.XCoordinate} Y ={base.component.FormObject.YCoordinate}");
+        Debug.WriteLine($"Image Decorator Name= {base.component.FormObject.name} X={base.component.FormObject.XCoordinate} Y ={base.component.FormObject.YCoordinate}");
 
 
-            Canvas.SetLeft(imag, base.component.FormObject.XCoordinate);
-            Canvas.SetTop(imag, base.component.FormObject.YCoordinate);
+            Canvas.SetLeft(imag, component.FormObject.XCoordinate);
+            Canvas.SetTop(imag, component.FormObject.YCoordinate);
 
             base.Create(content);
         }
@@ -270,20 +274,22 @@ namespace MassHell_WPF
         public RectangleDecorator(Showwage show)
             : base(show)
         {
+            FormObject = show.FormObject;
+            FormObject.name += "_rectangle";
         }
         public override void Create(string content)
         {
-            rect.Name = "label" + base.component.FormObject.name;
+            rect.Name = FormObject.name;
             rect.Width = 240;
             rect.Height = 30;
             //Canvas foundCanvas = UIHelper.FindChild<Canvas>(Application.Current.MainWindow, "MainPanel");
             //foundCanvas.Children.Add(l);
 
-            //Debug.WriteLine($"Rectangle Decorator Name= {base.component.FormObject.name} X={base.component.FormObject.XCoordinate} Y ={base.component.FormObject.YCoordinate}");
+            Debug.WriteLine($"Rectangle Decorator Name= {component.FormObject.name} X={base.component.FormObject.XCoordinate} Y ={base.component.FormObject.YCoordinate}");
 
 
-            Canvas.SetLeft(rect, base.component.FormObject.XCoordinate);
-            Canvas.SetTop(rect, base.component.FormObject.YCoordinate);
+            Canvas.SetLeft(rect, base.FormObject.XCoordinate);
+            Canvas.SetTop(rect, base.FormObject.YCoordinate);
 
             base.Create(content);
         }
