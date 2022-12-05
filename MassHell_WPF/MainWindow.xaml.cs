@@ -47,7 +47,7 @@ namespace MassHell_WPF
         }
 
         // Later will be changed to use Player class?
-        private async void GameTimerEvent()
+        private async void GameTimerEvent(string username)
         {
             double rotation = 0;
             Image playerImage = new Image();
@@ -66,7 +66,7 @@ namespace MassHell_WPF
             label.Name = "McLabel";
             label.Width = 240;
             label.Height = 30;
-            label.Content = "Lots of words";
+            label.Content = username;
 
             MainPanel.Children.Add(label);
 
@@ -334,7 +334,7 @@ namespace MassHell_WPF
             MainPanel.Visibility = Visibility.Visible;
             MainPanel.Focus();
             MainMenu.Visibility = Visibility.Collapsed;
-            GameTimerEvent();
+            GameTimerEvent(UsernameBox.Text);
         }
 
         private void MoveOtherPlayer(Player otherPlayer)
