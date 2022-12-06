@@ -10,22 +10,22 @@ namespace MassHell_Library.TemplateMethod
     public class SpawnHardEnemies : EnemyConveoyr
     {
         private Random pos = new Random();
-        public override bool needMages()
+        public sealed override bool needMages()
         {
             return true;
         }
 
-        public override bool needNinjas()
+        public sealed override bool needNinjas()
         {
             return false;
         }
 
-        public override bool needWarriors()
+        public sealed override bool needWarriors()
         {
             return false;
         }
 
-        public override void spawnMages(out Tile position, out Item returningItem)
+        public sealed override void spawnMages(out Tile position, out Item returningItem)
         {
             int heightRandom = pos.Next(1, 720);
             int widthRandom = pos.Next(1, 1280);
@@ -38,7 +38,7 @@ namespace MassHell_Library.TemplateMethod
             returningItem.Name = "Mage";
         }
 
-        public override void spawnNinjas(out Tile position, out Item returningItem)
+        public sealed override void spawnNinjas(out Tile position, out Item returningItem)
         {
             int heightRandom = pos.Next(1, 720);
             int widthRandom = pos.Next(1, 1280);
@@ -51,7 +51,7 @@ namespace MassHell_Library.TemplateMethod
             returningItem.Name = "Ninja";
         }
 
-        public override void spawnWarriors(out Tile position, out Item returningItem)
+        public sealed override void spawnWarriors(out Tile position, out Item returningItem)
         {
             int heightRandom = pos.Next(1, 720);
             int widthRandom = pos.Next(1, 1280);

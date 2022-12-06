@@ -8,7 +8,7 @@ namespace MassHell_Library.TemplateMethod
 {
     public abstract class EnemyConveoyr
     {
-        public void templateMethod()
+        public virtual void createEnemy()
         {
             if (needMages())
             {
