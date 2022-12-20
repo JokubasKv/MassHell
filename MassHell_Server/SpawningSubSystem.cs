@@ -2,7 +2,7 @@
 using MassHell_Library;
 using Microsoft.AspNetCore.SignalR;
 using System;
-
+using MassHell_Library.Iterator;
 
 namespace MassHell_Server
 {
@@ -10,6 +10,9 @@ namespace MassHell_Server
     {
         private Random pos = new Random();
         private Logger _logger = Logger.getInstance();
+
+        private Aggregate<Weapon> weapons = new Aggregate<Weapon>();
+        private int iteratorIndex = 0;
         public void SpawnItem(out Tile position, out Item returningItem)
         {
             // Will be changed according to map Tiles
@@ -21,8 +24,47 @@ namespace MassHell_Server
             if (chance > 0.5)
             {
                 // Change not to be hardcoded
-                returningItem = new Weapon("InterestingName", 50, "Legendary");
-                _logger.debug("Weapon Created");
+
+                var v = Enum.GetValues(typeof(Rarity));
+                var rarity = (Rarity)v.GetValue(pos.Next(v.Length));
+                var name = "Sword";
+
+                int damage;
+                if (rarity == Rarity.Legendary)
+                {
+                    damage = pos.Next(40, 50);
+                }
+                else if (rarity == Rarity.Rare)
+                {
+                    damage = pos.Next(30, 40);
+                }
+                else if (rarity == Rarity.Uncommon)
+                {
+                    damage = pos.Next(20, 30);
+                }
+                else if (rarity == Rarity.Common)
+                {
+                    damage = pos.Next(10, 20);
+                }
+                else
+                {
+                    damage = 2;
+                }
+
+                Weapon weapon = new Weapon(name, damage, rarity.ToString());
+                weapons[iteratorIndex] = weapon;
+                iteratorIndex++;
+
+                var iterator = weapons.Iterator;
+                while (iterator.IsLeft())
+                {
+                    _logger.debug("Created weapon: " + iterator.Current.Name + " Weapon, " + iterator.Current.Damage + " Damage, " + iterator.Current.Rarity + " Rarity");
+
+                    iterator.Next();
+                }
+
+
+                returningItem = weapon;
 
 
             }
