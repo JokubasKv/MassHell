@@ -8,7 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\Boss.png" />
     <None Remove="Images\Mage.png" />
+    <None Remove="Images\Minigun.png" />
     <None Remove="Images\Ninja.png" />
     <None Remove="Images\potion.png" />
     <None Remove="Images\potion2.png" />
@@ -24,7 +26,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Images\Boss.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\Mage.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Minigun.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\Ninja.png">

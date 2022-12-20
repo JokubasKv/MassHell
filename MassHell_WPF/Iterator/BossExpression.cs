@@ -15,6 +15,11 @@ namespace MassHell_WPF.Iterator
             this.value = newValue;
         }
 
+        public override string getValue()
+        {
+            return value;
+        }
+
         public override string execute()
         {
             return "BOSS";

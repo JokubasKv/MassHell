@@ -15,6 +15,11 @@ namespace MassHell_WPF.Iterator
 
         }
 
+        public override string getValue()
+        {
+            return "NULL";
+        }
+
         public override string execute()
         {
             return "NULL";

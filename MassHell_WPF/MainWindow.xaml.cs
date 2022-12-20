@@ -317,6 +317,10 @@ namespace MassHell_WPF
             {
                 resourceUri = new Uri("Images/potion.png", UriKind.Relative);
             }
+            else if (item.Name == "MINIGUN")
+            {
+                resourceUri = new Uri("Images/Minigun.png", UriKind.Relative);
+            }
             else
             {
                 resourceUri = new Uri("Images/potion7.png", UriKind.Relative);
@@ -413,9 +417,20 @@ namespace MassHell_WPF
 
             if (Keyboard.IsKeyDown(Key.T) && Keyboard.IsKeyDown(Key.LeftCtrl))
             {
+                Expression e1 = new BossExpression("CTRL");
+                Expression e2 = new BossExpression("T");
 
+                Expression query = new PlusExpression(e1, e2);
+
+                var result = query.execute();
+
+                connection.InvokeAsync(result);
+            }
+
+            if (Keyboard.IsKeyDown(Key.V) && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
                 Expression e1 = new ItemExpression("CTRL");
-                Expression e2 = new ItemExpression("T");
+                Expression e2 = new ItemExpression("V");
 
                 Expression query = new PlusExpression(e1, e2);
 
@@ -426,7 +441,7 @@ namespace MassHell_WPF
 
             if (e.Key == Key.L)
             {
-
+                var x = Key.L;
                 Item p1 = new Item();
                 p1.Name = "First item";
 

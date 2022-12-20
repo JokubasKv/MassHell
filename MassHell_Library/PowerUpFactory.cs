@@ -36,6 +36,10 @@ namespace MassHell_Library
             {
                 objType = new SpeedPowerUp(1.5f, "SPEED", 20);
             }
+            else if (type.ToLower().Equals("minigun"))
+            {
+                objType = new Minigun(3f, "MINIGUN", 50);
+            }
             else
             {
                 throw new ArgumentNullException($"Incorrect power up type {type}");

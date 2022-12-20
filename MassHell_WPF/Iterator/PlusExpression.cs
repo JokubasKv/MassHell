@@ -22,9 +22,24 @@ namespace MassHell_WPF.Iterator
             right = new NullExpression();
         }
 
+        public override string getValue()
+        {
+            return left.getValue();
+        }
+
         public override string execute()
         {
-            return "SpawnEnemy";
+            var first = left.getValue();
+            var second = right.getValue();
+            if (first == "CTRL" && second == "T" && left.execute() == "BOSS" && right.execute() == "BOSS")
+            {
+                return "SpawnEnemy";
+            }
+            if (first == "CTRL" && second == "V" && left.execute() == "ITEM" && right.execute() == "ITEM")
+            {
+                return "SpawnMinigun";
+            }
+            return "";
         }
     }
 }

@@ -140,5 +140,20 @@ namespace MassHell_Server
             var test = returningItem.Name;
 
         }
+
+        public void SpawnMinigun(out Tile position, out Item returningItem)
+        {
+            // Will be changed according to map Tiles
+            int heightRandom = pos.Next(1, 720);
+            int widthRandom = pos.Next(1, 1280);
+            position = new Tile(widthRandom, heightRandom, 0);
+            returningItem = new Item();
+
+            returningItem = new Minigun(3, "MINIGUN", 50);
+            _logger.debug("Minigun Created");
+
+            returningItem.Name = "MINIGUN";
+
+        }
     }
 }

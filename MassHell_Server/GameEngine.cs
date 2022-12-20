@@ -57,6 +57,15 @@ namespace MassHell_Server
             await Clients.All.SendAsync("DrawItem", pos, returningItem);
 
         }
+
+        public async Task SpawnMinigun()
+        {
+            Tile pos;
+            Item returningItem;
+            spawning.SpawnMinigun(out pos, out returningItem);
+            await Clients.All.SendAsync("DrawItem", pos, returningItem);
+
+        }
         public Map CreateMap()
         {
             // Add logic to add rows of tiles with correct coords
