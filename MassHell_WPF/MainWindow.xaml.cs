@@ -15,6 +15,8 @@ using System.Numerics;
 using System.Collections.Generic;
 using System.Runtime;
 using System.Runtime.InteropServices;
+using MassHell_WPF.Iterator;
+using Expression = MassHell_WPF.Iterator.Expression;
 
 namespace MassHell_WPF
 {
@@ -62,6 +64,7 @@ namespace MassHell_WPF
                     }
                 }
             }
+
             Label label = new Label();
             label.Name = "McLabel";
             label.Width = 240;
@@ -406,6 +409,19 @@ namespace MassHell_WPF
 
                 var image = new ImageDecorator(label);
                 image.Create("Stuff");
+            }
+
+            if (Keyboard.IsKeyDown(Key.T) && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+
+                Expression e1 = new ItemExpression("CTRL");
+                Expression e2 = new ItemExpression("T");
+
+                Expression query = new PlusExpression(e1, e2);
+
+                var result = query.execute();
+
+                connection.InvokeAsync(result);
             }
 
             if (e.Key == Key.L)
