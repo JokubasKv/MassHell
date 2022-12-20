@@ -296,7 +296,7 @@ namespace MassHell_WPF
             user.Width = 100;
             Uri resourceUri;
             Console.WriteLine(item.GetType());
-            if (item.Name == "InterestingName")
+            if (item.Name == "Sword")
             {
                 resourceUri = new Uri("Images/sword.png", UriKind.Relative);
             }
