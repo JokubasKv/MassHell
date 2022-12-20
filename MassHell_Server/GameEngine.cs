@@ -12,7 +12,7 @@ namespace MassHell_Server
 
         //Facade
         //public NotifyingSubSystem notifs = new NotifyingSubSystem();
-        public CommunicationSubSystem comms = new CommunicationSubSystem();
+        public static CommunicationSubSystem comms = new CommunicationSubSystem();
         public SpawningSubSystem spawning = new SpawningSubSystem();
 
         public async void ConnectPlayer(Player p)
@@ -28,11 +28,19 @@ namespace MassHell_Server
             connectedPlayers.Add(p);
             _logger.debug(connectedPlayers[0].ToString());
 
+            comms.AppendPlayer(p);
 
-
+            List<string> messages = comms.DisplayChat();
+            await Clients.Caller.SendAsync("GetMessages", messages.TakeLast(10));
             //Tell all other players about new player
             await Clients.Others.SendAsync("PlayerConnected", p);
-            comms.AppendPlayer(p);
+        }
+        public async Task SendMessage(Player sender,string message)
+        {
+            _logger.debug("Message sent from" + sender + ": " + message);
+            comms.AddMessage(sender, message);
+            List<string> messages = comms.DisplayChat();
+            await Clients.All.SendAsync("GetMessages", messages.TakeLast(10));
         }
         public async Task UpdatePlayerPosition(Player p)
         {

@@ -17,6 +17,8 @@ using System.Runtime;
 using System.Runtime.InteropServices;
 using MassHell_WPF.Iterator;
 using Expression = MassHell_WPF.Iterator.Expression;
+using System.Linq;
+using System.Collections;
 
 namespace MassHell_WPF
 {
@@ -115,6 +117,7 @@ namespace MassHell_WPF
             connection.On<Player>("MoveOtherPlayer", (otherPlayer) => MoveOtherPlayer(otherPlayer));
             connection.On<List<Player>>("DrawOtherPlayers", (otherPlayers) => DrawOtherPlayers(otherPlayers));
             connection.On<Tile, Item>("DrawItem", (position, item) => DrawItem(position, item));
+            connection.On<List<string>>("GetMessages", (messages) => DisplayMessages(messages));
         }
 
         private void DrawOtherPlayers(List<Player> otherPlayers)
@@ -470,10 +473,30 @@ namespace MassHell_WPF
                 Debug.WriteLine("   p3 instance values (everything was kept the same):");
                 DisplayValues(p3);
             }
-        }
-    
+            if (e.Key == Key.Enter)
+            {
+                clientPlayer.chatOpen = !clientPlayer.chatOpen;
+                Canvas canvas = Chat;
+                canvas.Visibility = Visibility.Visible;
+                StackPanel stack = canvas.Children.OfType<StackPanel>().FirstOrDefault();
+                if (clientPlayer.chatOpen == true && canvas != null)
+                {
+                    canvas.Opacity = 1.0;
 
-    public static void DisplayValues(Item p)
+                    Label label = stack.Children.OfType<Label>().FirstOrDefault();
+                    TextBox enter = stack.Children.OfType<TextBox>().FirstOrDefault();
+                    if (enter != null)
+                    {
+                        enter.Focus();
+                        enter.Visibility = Visibility.Visible;
+                    }
+                    FocusManager.SetFocusedElement(Main, enter);
+                }
+            }
+
+        }
+
+        public static void DisplayValues(Item p)
     {
             GCHandle handle = GCHandle.Alloc(p, GCHandleType.WeakTrackResurrection);
             long address = GCHandle.ToIntPtr(handle).ToInt64();
@@ -515,6 +538,40 @@ namespace MassHell_WPF
             }
         }
 
+        private async void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
 
+            if(e.Key == Key.Return)
+            {
+                clientPlayer.chatOpen = !clientPlayer.chatOpen;
+                Canvas canvas = Chat;
+                StackPanel stack = canvas.Children.OfType<StackPanel>().FirstOrDefault();
+                canvas.Opacity = 0.6;
+                TextBox enter = stack.Children.OfType<TextBox>().FirstOrDefault();
+                if (enter != null)
+                {
+                    MainPanel.Focus();
+                    enter.Visibility = Visibility.Hidden;
+                    string message = enter.Text;
+                    enter.Text = "";
+                    //label.Content = "[" + clientPlayer.Name + " " + DateTime.Now.ToShortTimeString() + "] " + message;
+                    await connection.InvokeAsync("SendMessage", clientPlayer, message);
+
+                }
+                MainPanel.Focus();
+            }
+        }
+        private void DisplayMessages(List<string> messages)
+        {
+            StackPanel stack = Chat.Children.OfType<StackPanel>().FirstOrDefault();
+            stack.Children.Clear();
+            stack.Children.Add(EnterChat);
+            foreach (var m in messages)
+            {
+                Label label = new Label();
+                label.Content = m;
+                stack.Children.Add(label);
+            }
+        }
     }
 }

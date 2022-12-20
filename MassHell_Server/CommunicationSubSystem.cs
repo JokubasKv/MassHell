@@ -4,16 +4,19 @@ namespace MassHell_Server
 {
     public class CommunicationSubSystem
     {
-        private Chat chat;
+        private static Chat chat;
         List<Player> connectedPlayers = new List<Player>();
 
         //Used to add all players to current session of chat
         public CommunicationSubSystem()
         {
+            chat = new Chat();
         }
-        public List<Message> DisplayChat()
+        public List<string> DisplayChat()
         {
-            return chat.Messages;
+            List<string> messages = new List<string>();
+                messages.AddRange(Chat.Messages.Select(m => m.ToString()));
+            return messages;
         }
         public void AddMessage(Player player,string message)
         {

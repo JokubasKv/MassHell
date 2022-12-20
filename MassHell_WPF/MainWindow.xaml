@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MassHell_WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="720" Width="1280">
+        Title="MainWindow" Height="720" Width="1280"
+        x:Name="Main">
     <Canvas>
         <Grid x:Name="Inventory" Opacity="0.5"  HorizontalAlignment="Left" VerticalAlignment="Top" Background="DimGray" Width="500" Height="166
               " Canvas.Left="390" Canvas.Top="252" Visibility="Collapsed">
@@ -29,7 +30,7 @@
 
 
         </Grid>
-        <Canvas Name="MainPanel" Keyboard.KeyDown="MainPanel_KeyDown" Keyboard.KeyUp="MainPanel_KeyUp" Background="LightBlue"
+        <Canvas x:Name="MainPanel" Keyboard.KeyDown="MainPanel_KeyDown" Keyboard.KeyUp="MainPanel_KeyUp" Background="LightBlue"
             Focusable="True" Visibility="Collapsed">
         </Canvas>
         <Canvas x:Name="MainMenu">
@@ -39,7 +40,12 @@
             <Button Content="Connect" Name="RegisterUser" Height='20
                     ' Width="100" Canvas.Left="625" Canvas.Top="339" HorizontalAlignment="Center" VerticalAlignment="Top" Click="RegisterUser_Click"></Button>
         </Canvas>
-
+        <Canvas x:Name="Chat" Canvas.Left="25" MaxWidth="300" MaxHeight="250" Width="300" Height="250" Canvas.Top="25" Background="Gray" Opacity="0.7"
+            Focusable="True" Visibility="Hidden" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <StackPanel Margin="10" VerticalAlignment="Bottom">
+                <TextBox Width="250" Height="20" Background="White" Visibility="Collapsed" KeyDown="TextBox_KeyDown" x:Name="EnterChat" />
+            </StackPanel>
+        </Canvas>
     </Canvas>
 
 

@@ -25,6 +25,7 @@ namespace MassHell_Library
         public bool goDown { get; set; }
 
         public bool invOpen = true;
+        public bool chatOpen = false;
 
 
 
