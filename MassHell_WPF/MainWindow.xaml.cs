@@ -324,6 +324,10 @@ namespace MassHell_WPF
             {
                 resourceUri = new Uri("Images/Minigun.png", UriKind.Relative);
             }
+            else if (item.Name == "BOSS")
+            {
+                resourceUri = new Uri("Images/Boss.png", UriKind.Relative);
+            }
             else
             {
                 resourceUri = new Uri("Images/potion7.png", UriKind.Relative);

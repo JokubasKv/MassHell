@@ -2,6 +2,8 @@
 using MassHell_Library;
 using System;
 using MassHell_Library.AbstractFactory;
+using MassHell_Library.Interpreter;
+using MassHell_Server.Interpreter;
 
 namespace MassHell_Server
 {
@@ -39,6 +41,30 @@ namespace MassHell_Server
         {
             _logger.debug("Message sent from" + sender + ": " + message);
             comms.AddMessage(sender, message);
+
+            Context context = new Context(message);
+
+            Tile pos = new Tile();
+            Item returningItem = new Item();
+
+            var exp1 = new SpawnMinigunExpression();
+            var result1 = exp1.Interpret(context, pos, returningItem);
+
+            var exp2 = new SpawnBossExpression();
+            var result2 =exp2.Interpret(context, pos, returningItem);
+
+
+            if (result1.Count > 0)
+            {
+                await Clients.All.SendAsync("DrawItem", result1.Keys.First(), result1.Values.First());
+            }
+            else if (result2.Count > 0)
+            {
+                await Clients.All.SendAsync("DrawItem", result2.Keys.First(), result2.Values.First());
+            }
+
+
+
             List<string> messages = comms.DisplayChat();
             await Clients.All.SendAsync("GetMessages", messages.TakeLast(10));
         }

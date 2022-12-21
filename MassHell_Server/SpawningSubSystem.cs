@@ -192,7 +192,6 @@ namespace MassHell_Server
             returningItem = new Item();
 
             returningItem = new Minigun(3, "MINIGUN", 50);
-            _logger.debug("Minigun Created");
 
             returningItem.Name = "MINIGUN";
 
