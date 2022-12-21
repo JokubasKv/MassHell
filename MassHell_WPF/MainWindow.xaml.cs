@@ -75,6 +75,16 @@ namespace MassHell_WPF
 
             MainPanel.Children.Add(label);
 
+            var mediaPlayer = new MediaPlayer();
+            mediaPlayer.MediaEnded += (sender, eventArgs) => Debug.WriteLine($"ended.");
+            mediaPlayer.MediaOpened += (sender, eventArgs) => Debug.WriteLine($"started.");
+            mediaPlayer.MediaFailed += (sender, eventArgs) => Debug.WriteLine($"failed: {eventArgs.ErrorException.Message}");
+            mediaPlayer.Changed += (sender, eventArgs) => Debug.WriteLine("changed");
+
+            mediaPlayer.Open(new Uri(@"Images/footstep.mp3", UriKind.Relative));
+            mediaPlayer.Play();
+
+
             //Tile tile = new Tile(Canvas.GetLeft(playerImage), Canvas.GetTop(playerImage), rotation);
             //Username Text field going to be replaced by Player class
             await connection.InvokeAsync("ConnectPlayer", clientPlayer);
