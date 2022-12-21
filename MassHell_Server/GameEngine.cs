@@ -2,17 +2,19 @@
 using MassHell_Library;
 using System;
 using MassHell_Library.AbstractFactory;
+using MassHell_Server.Mediator;
 
 namespace MassHell_Server
 {
     public class GameEngine : Hub
     {
         private static List<Player> connectedPlayers = new List<Player>();
+        private static Dictionary<string, string> connections = new Dictionary<string, string>();
         private readonly Logger _logger = Logger.getInstance();
 
         //Facade
         //public NotifyingSubSystem notifs = new NotifyingSubSystem();
-        public static CommunicationSubSystem comms = new CommunicationSubSystem();
+        public static Chat comms = new Chat();
         public SpawningSubSystem spawning = new SpawningSubSystem();
 
         public async void ConnectPlayer(Player p)
@@ -26,21 +28,65 @@ namespace MassHell_Server
                 await Clients.Caller.SendAsync("DrawOtherPlayers", connectedPlayers);
             }
             connectedPlayers.Add(p);
-            _logger.debug(connectedPlayers[0].ToString());
+            if(!connections.ContainsKey(p.Name))
+            {
+                _logger.debug(p.Name);
+                connections.Add(p.Name, Context.User.Identity.Name);
+            }
 
-            comms.AppendPlayer(p);
+            comms.AppendRecipient(new Human(p.Name));
 
             List<string> messages = comms.DisplayChat();
+
             await Clients.Caller.SendAsync("GetMessages", messages.TakeLast(10));
             //Tell all other players about new player
             await Clients.Others.SendAsync("PlayerConnected", p);
+
         }
-        public async Task SendMessage(Player sender,string message)
+        public async Task SendMessage(string sender,string message)
         {
-            _logger.debug("Message sent from" + sender + ": " + message);
-            comms.AddMessage(sender, message);
+            _logger.debug("Message sent from " + sender + ": " + message);
+            //{
+            //    Message returning = comms.CallSystemMessage(message);
+            //    List<string> messages = comms.DisplayChat();
+            //    messages.Add(returning.ToString());
+            //    await Clients.Caller.SendAsync("GetMessages", messages.TakeLast(1));
+
+            //}
+            //else
+            //{
             List<string> messages = comms.DisplayChat();
-            await Clients.All.SendAsync("GetMessages", messages.TakeLast(10));
+            int countBefore = messages.Count;
+            Message current = comms.AddMessage(message,sender);
+            messages = comms.DisplayChat();
+            int countAfter = messages.Count;
+            if(countBefore == countAfter)
+            {
+                messages.Add(current.ToString());
+                await Clients.Caller.SendAsync("GetMessages", messages.TakeLast(1));
+                messages.Remove(current.ToString());
+            }
+            else
+            {
+                await Clients.All.SendAsync("GetMessages", messages.TakeLast(1));
+            }
+            ///
+            /// Can't figure out why it doesn't like to take connectionID as user identifier
+            ///
+            //    string userID = null; 
+            //    connections.TryGetValue(sender.Name,out userID);
+            //if (userID != null)
+            //{
+            //    _logger.debug("Banana:");
+            //    await Clients.User(userID).SendAsync("GetMessages", messages.TakeLast(1));
+            //    _logger.debug(Context.ConnectionId);
+            //    await Clients.User(Context.ConnectionId).SendAsync("GetMessages", messages.TakeLast(1));
+
+            //}
+            // Make system say no user
+
+            ////}
+
         }
         public async Task UpdatePlayerPosition(Player p)
         {

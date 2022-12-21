@@ -555,7 +555,7 @@ namespace MassHell_WPF
                     string message = enter.Text;
                     enter.Text = "";
                     //label.Content = "[" + clientPlayer.Name + " " + DateTime.Now.ToShortTimeString() + "] " + message;
-                    await connection.InvokeAsync("SendMessage", clientPlayer, message);
+                    await connection.InvokeAsync("SendMessage", clientPlayer.Name.ToString(), message);
 
                 }
                 MainPanel.Focus();
@@ -564,8 +564,11 @@ namespace MassHell_WPF
         private void DisplayMessages(List<string> messages)
         {
             StackPanel stack = Chat.Children.OfType<StackPanel>().FirstOrDefault();
-            stack.Children.Clear();
-            stack.Children.Add(EnterChat);
+            //stack.Children.Add(EnterChat);
+            if(stack.Children.Count > 10)
+            {
+                stack.Children.Remove(stack.Children[1]);
+            }
             foreach (var m in messages)
             {
                 Label label = new Label();
