@@ -82,4 +82,8 @@
     <Resource Include="Varn_token.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Sounds\" />
+  </ItemGroup>
+
 </Project>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MassHell_Library
 {
@@ -34,6 +35,20 @@ namespace MassHell_Library
         public Player()
         {
             Inventory = new Item[0];
+        }
+        public Player(Player player)
+        {
+            Id = player.Id;
+            Name = player.Name;
+            XCoordinate = player.XCoordinate;
+            YCoordinate = player.YCoordinate;
+            Speed = player.Speed;
+            Damage = player.Damage;
+            Mana = player.Mana;
+            Health = player.Health;
+            Lives = player.Lives;
+            CanWalkOnWater = player.CanWalkOnWater;
+            Inventory = player.Inventory;
         }
         public Player(int id, string name, double positionX, double positionY,double rotation, int speed, int damage, int health, byte lives, int mana = 0, bool canWalkOnWater = false)
         {

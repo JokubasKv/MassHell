@@ -12,7 +12,14 @@ namespace MassHell_Server
         private Logger _logger = Logger.getInstance();
 
         private Aggregate<Weapon> weapons = new Aggregate<Weapon>();
-        private int iteratorIndex = 0;
+        private int weaponsIteratorIndex = 0;
+
+        private Aggregate<Item> items = new Aggregate<Item>();
+        private int itemIteratorIndex = 0;
+
+        private Aggregate<Item> enemies = new Aggregate<Item>();
+        private int ememyIteratorIndex = 0;
+
         public void SpawnItem(out Tile position, out Item returningItem)
         {
             // Will be changed according to map Tiles
@@ -52,13 +59,13 @@ namespace MassHell_Server
                 }
 
                 Weapon weapon = new Weapon(name, damage, rarity.ToString());
-                weapons[iteratorIndex] = weapon;
-                iteratorIndex++;
+                weapons[weaponsIteratorIndex] = weapon;
+                weaponsIteratorIndex++;
 
                 var iterator = weapons.Iterator;
                 while (iterator.IsLeft())
                 {
-                    _logger.debug("Created weapon: " + iterator.Current.Name + " Weapon, " + iterator.Current.Damage + " Damage, " + iterator.Current.Rarity + " Rarity");
+                    _logger.debug("Added weapon to iterator: " + iterator.Current.Name + " Weapon, " + iterator.Current.Damage + " Damage, " + iterator.Current.Rarity + " Rarity");
 
                     iterator.Next();
                 }
@@ -79,6 +86,7 @@ namespace MassHell_Server
                     // Creating powerups
                     Random random2 = new Random();
                     int probbability2 = random2.Next(0, 300);
+                    returningItem.Name = "healthboost";
                     if (probbability2 >= 100 && probbability2 <= 200)
                     {
                         returningItem = (Item)PowerUpFactory.getPowerUp("healthboost");
@@ -95,6 +103,19 @@ namespace MassHell_Server
                         returningItem.Name = "speedpowerup";
                     }
                 }
+
+                items[itemIteratorIndex] = returningItem;
+                itemIteratorIndex++;
+
+                var iterator = items.Iterator;
+                while (iterator.IsLeft())
+                {
+                    _logger.debug("Added item to iterator: " + iterator.Current.Name + " item");
+
+                    iterator.Next();
+                }
+
+
             }
 
         }
@@ -179,6 +200,17 @@ namespace MassHell_Server
                 }
                 returningItem.Name = "Ninja";
             }
+
+            enemies[ememyIteratorIndex] = returningItem;
+            ememyIteratorIndex++;
+
+            var iterator = enemies.Iterator;
+            while (iterator.IsLeft())
+            {
+                _logger.debug("Added enemy to iterator: " + iterator.Current.Name + " enemy");
+
+                iterator.Next();
+            }
             var test = returningItem.Name;
 
         }
@@ -192,7 +224,6 @@ namespace MassHell_Server
             returningItem = new Item();
 
             returningItem = new Minigun(3, "MINIGUN", 50);
-            _logger.debug("Minigun Created");
 
             returningItem.Name = "MINIGUN";
 

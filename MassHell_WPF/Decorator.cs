@@ -108,7 +108,7 @@ namespace MassHell_WPF
             return (new FormObject(l.Name, x, y, 0));
         }
     }
-
+   */
     public class UIHelper
     {
         /// <summary>
@@ -163,7 +163,7 @@ namespace MassHell_WPF
 
             return foundChild;
         }
-    }*/
+    }
 
 
     /// <summary>
@@ -225,12 +225,14 @@ namespace MassHell_WPF
         }
         public override void Create(string content)
         {
-            l.Name = FormObject.name;
+            l.Name = FormObject.name + "_" + content;
             l.Width = 240;
             l.Height = 30;
             l.Content = content;
-            //Canvas foundCanvas = UIHelper.FindChild<Canvas>(Application.Current.MainWindow, "MainPanel");
-            //foundCanvas.Children.Add(l);
+            //double s = Application.Current.MainWindow.ActualHeight;
+            Canvas firstCanvas = UIHelper.FindChild<Canvas>(Application.Current.MainWindow, "FirstCanvas");
+            Canvas foundCanvas = UIHelper.FindChild<Canvas>(firstCanvas, "MainPanel");
+            foundCanvas.Children.Add(l);
 
             Debug.WriteLine($"Label Decorator Name= {base.component.FormObject.name} X={base.component.FormObject.XCoordinate} Y ={base.component.FormObject.YCoordinate}");
 

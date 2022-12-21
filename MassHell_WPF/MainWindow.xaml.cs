@@ -29,6 +29,7 @@ namespace MassHell_WPF
     {
         private HubConnection? connection;
         int initialSpeed = 25;
+        
         Player clientPlayer;
 
 
@@ -75,6 +76,7 @@ namespace MassHell_WPF
 
             MainPanel.Children.Add(label);
 
+
             //Tile tile = new Tile(Canvas.GetLeft(playerImage), Canvas.GetTop(playerImage), rotation);
             //Username Text field going to be replaced by Player class
             await connection.InvokeAsync("ConnectPlayer", clientPlayer);
@@ -92,8 +94,9 @@ namespace MassHell_WPF
                     //NewMovePlayer(clientPlayer);
                     NewerMovePlayer(clientPlayer);
                     MoveFormObject(new FormObject(label.Name, clientPlayer.XCoordinate, clientPlayer.YCoordinate, clientPlayer.Rotation));
+                    await connection.InvokeAsync("UpdatePlayerPosition", clientPlayer);
                 }
-                await connection.InvokeAsync("UpdatePlayerPosition", clientPlayer);
+                
                 //rotation = tile.Rotation;
 
             }
@@ -288,14 +291,23 @@ namespace MassHell_WPF
             }
         }
 
+
         public void DrawItem(Tile pos,Item item)
         {
-            var user = new Image();
+            var itemVis = new ItemVisualizer();
+            var enemyVis = new EnemyVisualizer();
+            var potionVis = new PotionVisualizer();
+
+            itemVis.SetNext(enemyVis);
+            enemyVis.SetNext(potionVis);
+            itemVis.Draw(pos, item);
+
+            /*var user = new Image();
             user.Name = item.Name;
             user.Height = 100;
             user.Width = 100;
             Uri resourceUri;
-            Console.WriteLine(item.GetType());
+            Debug.WriteLine(item.GetType());
             if (item.Name == "Sword")
             {
                 resourceUri = new Uri("Images/sword.png", UriKind.Relative);
@@ -324,6 +336,10 @@ namespace MassHell_WPF
             {
                 resourceUri = new Uri("Images/Minigun.png", UriKind.Relative);
             }
+            else if (item.Name == "BOSS")
+            {
+                resourceUri = new Uri("Images/Boss.png", UriKind.Relative);
+            }
             else
             {
                 resourceUri = new Uri("Images/potion7.png", UriKind.Relative);
@@ -332,7 +348,7 @@ namespace MassHell_WPF
             Canvas.SetTop(user, pos.XCoordinate + 50);
             Canvas.SetLeft(user, pos.YCoordinate + 50);
             user.LayoutTransform = new RotateTransform(pos.Rotation);
-            MainPanel.Children.Add(user);
+            MainPanel.Children.Add(user);*/
         }
 
         private void RegisterUser_Click(object sender, RoutedEventArgs e)
@@ -415,7 +431,7 @@ namespace MassHell_WPF
                 label.Create("Hello");
 
                 var image = new ImageDecorator(label);
-                image.Create("Stuff");
+                //image.Create("Stuff");
             }
 
             if (Keyboard.IsKeyDown(Key.T) && Keyboard.IsKeyDown(Key.LeftCtrl))
@@ -472,6 +488,14 @@ namespace MassHell_WPF
                 DisplayValues(p2);
                 Debug.WriteLine("   p3 instance values (everything was kept the same):");
                 DisplayValues(p3);
+            }
+            if (e.Key == Key.N)
+            {
+                connection.InvokeAsync("SavePlayerPosition");
+            }
+            if (e.Key == Key.M)
+            {
+                connection.InvokeAsync("UndoPlayerPosition");
             }
             if (e.Key == Key.Enter)
             {
@@ -555,7 +579,7 @@ namespace MassHell_WPF
                     string message = enter.Text;
                     enter.Text = "";
                     //label.Content = "[" + clientPlayer.Name + " " + DateTime.Now.ToShortTimeString() + "] " + message;
-                    await connection.InvokeAsync("SendMessage", clientPlayer.Name.ToString(), message);
+                    await connection.InvokeAsync("SendMessage", clientPlayer.Name, message);
 
                 }
                 MainPanel.Focus();
@@ -576,5 +600,13 @@ namespace MassHell_WPF
                 stack.Children.Add(label);
             }
         }
+
+
+        //===================================================
+        //Memento Code
+        // Saves the current state inside a memento.
+
+
     }
+
 }

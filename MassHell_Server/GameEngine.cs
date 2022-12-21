@@ -3,6 +3,10 @@ using MassHell_Library;
 using System;
 using MassHell_Library.AbstractFactory;
 using MassHell_Server.Mediator;
+using MassHell_Library.Interpreter;
+using MassHell_Server.Interpreter;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace MassHell_Server
 {
@@ -16,6 +20,13 @@ namespace MassHell_Server
         //public NotifyingSubSystem notifs = new NotifyingSubSystem();
         public static Chat comms = new Chat();
         public SpawningSubSystem spawning = new SpawningSubSystem();
+
+        //Memento
+        //GameState originator = new GameState(connectedPlayers);
+        //Caretaker caretaker = new Caretaker(originator);
+
+        static Originator originator = new Originator();
+        static Caretaker caretaker = new Caretaker();
 
         public async void ConnectPlayer(Player p)
         {
@@ -37,24 +48,38 @@ namespace MassHell_Server
             comms.AppendRecipient(new Human(p.Name));
 
             List<string> messages = comms.DisplayChat();
-
             await Clients.Caller.SendAsync("GetMessages", messages.TakeLast(10));
             //Tell all other players about new player
             await Clients.Others.SendAsync("PlayerConnected", p);
-
         }
         public async Task SendMessage(string sender,string message)
         {
-            _logger.debug("Message sent from " + sender + ": " + message);
-            //{
-            //    Message returning = comms.CallSystemMessage(message);
-            //    List<string> messages = comms.DisplayChat();
-            //    messages.Add(returning.ToString());
-            //    await Clients.Caller.SendAsync("GetMessages", messages.TakeLast(1));
+            _logger.debug("Message sent from" + sender + ": " + message);
+            //comms.AddMessage(sender, message);
 
-            //}
-            //else
-            //{
+            Context context = new Context(message);
+
+            Tile pos = new Tile();
+            Item returningItem = new Item();
+
+            var exp1 = new SpawnMinigunExpression();
+            var result1 = exp1.Interpret(context, pos, returningItem);
+
+            var exp2 = new SpawnBossExpression();
+            var result2 =exp2.Interpret(context, pos, returningItem);
+
+
+            if (result1.Count > 0)
+            {
+                await Clients.All.SendAsync("DrawItem", result1.Keys.First(), result1.Values.First());
+            }
+            else if (result2.Count > 0)
+            {
+                await Clients.All.SendAsync("DrawItem", result2.Keys.First(), result2.Values.First());
+            }
+
+
+
             List<string> messages = comms.DisplayChat();
             int countBefore = messages.Count;
             Message current = comms.AddMessage(message,sender);
@@ -90,6 +115,15 @@ namespace MassHell_Server
         }
         public async Task UpdatePlayerPosition(Player p)
         {
+            foreach (Player mc in connectedPlayers)
+            {
+                if (mc.Name == p.Name) {
+                    mc.XCoordinate = p.XCoordinate;
+                    mc.YCoordinate = p.YCoordinate;
+                    mc.Rotation = p.Rotation;
+                        }
+            }
+            //originator.players = connectedPlayers;
             //Send every other client updated movement
             await Clients.Others.SendAsync("MoveOtherPlayer", p);
 
@@ -101,6 +135,23 @@ namespace MassHell_Server
             Item returningItem;
             spawning.SpawnEnemy(out pos,out returningItem);
             await Clients.All.SendAsync("DrawItem", pos, returningItem);
+        }
+        public async Task SavePlayerPosition()
+        {
+            originator.players = connectedPlayers.ConvertAll(p => new Player(p));
+            caretaker.AddMemento(originator.CreateMemento());
+
+        }
+        public async Task UndoPlayerPosition()
+        {
+            Console.WriteLine("Orignator current state : " + originator.GetDetails());
+            originator.players = caretaker.UndoToMemento().players;
+            Console.WriteLine("Orignator current state after change : " + originator.GetDetails());
+
+            foreach (Player p in originator.players)
+            {
+                await Clients.All.SendAsync("MoveOtherPlayer", p);
+            }
         }
         // Add more functionality to differ the use of facade
         public async Task SpawnItem()
