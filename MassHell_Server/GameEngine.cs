@@ -18,7 +18,7 @@ namespace MassHell_Server
 
         //Facade
         //public NotifyingSubSystem notifs = new NotifyingSubSystem();
-        public static Chat comms = new Chat();
+        public static AbstractChat comms = new ChatProxy();
         public SpawningSubSystem spawning = new SpawningSubSystem();
 
         //Memento

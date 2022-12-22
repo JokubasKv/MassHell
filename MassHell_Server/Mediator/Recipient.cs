@@ -14,6 +14,7 @@ namespace MassHell_Server.Mediator
             this.name = name;
         }
         public string name { get; set; }
+        public bool muted { get; set; }
 
         Chat chat;
         public Chat Chat

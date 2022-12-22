@@ -35,7 +35,6 @@ namespace MassHell_Server.Mediator
                 if (text.StartsWith("/"))
                 {
                 System rec = new System(name);
-                    rec.name = "SYSTEM";
                     Message mes = rec.SendMessage(text);
                 return mes;
                 }
